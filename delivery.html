@@ -11,6 +11,7 @@
     >
 
     <title>Milk Manager - Delivery</title>
+
     <script src="auth.js"></script>
 
     <link
@@ -26,22 +27,52 @@
 <div class="page-container delivery-page">
 
 
-    <!-- HEADER -->
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
     <div class="page-header">
 
         <div>
 
-            <h1>🥛 Today's Delivery</h1>
+            <h1>🥛 Delivery</h1>
 
-            <p id="deliveryDate"></p>
+            <p id="deliveryDateText"></p>
 
         </div>
 
     </div>
 
 
-    <!-- PROGRESS -->
+    <!-- =====================================================
+         DATE SELECTOR
+    ====================================================== -->
+
+    <div class="delivery-date-selector">
+
+        <label for="deliveryDatePicker">
+            Select Delivery Date
+        </label>
+
+        <input
+            type="date"
+            id="deliveryDatePicker"
+        >
+
+        <button
+            type="button"
+            id="todayBtn"
+            class="today-date-btn"
+        >
+            Today
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         PROGRESS
+    ====================================================== -->
 
     <div class="delivery-progress-box">
 
@@ -70,16 +101,19 @@
     </div>
 
 
-    <!-- CUSTOMER CARD -->
+    <!-- =====================================================
+         CUSTOMER AREA
+    ====================================================== -->
 
     <div
         id="customerArea"
         class="delivery-customer-area"
     >
 
-
         <div class="delivery-customer-card">
 
+
+            <!-- CUSTOMER HEADER -->
 
             <div class="delivery-customer-header">
 
@@ -87,7 +121,7 @@
                     id="customerAvatar"
                     class="delivery-avatar"
                 >
-                    RK
+                    C
                 </div>
 
 
@@ -106,6 +140,8 @@
             </div>
 
 
+            <!-- ADDRESS -->
+
             <div class="delivery-address">
 
                 📍
@@ -117,7 +153,9 @@
             </div>
 
 
-            <!-- MILK -->
+            <!-- =================================================
+                 MILK
+            ================================================== -->
 
             <div class="delivery-product-box">
 
@@ -128,7 +166,7 @@
                     </span>
 
                     <small>
-                        Today's quantity
+                        Delivery quantity
                     </small>
 
                 </div>
@@ -170,7 +208,9 @@
             </div>
 
 
-            <!-- EXTRA PRODUCTS -->
+            <!-- =================================================
+                 EXTRA PRODUCTS
+            ================================================== -->
 
             <div class="delivery-extra-products">
 
@@ -178,6 +218,8 @@
                     Extra Products
                 </h3>
 
+
+                <!-- PANEER -->
 
                 <div class="extra-product-row">
 
@@ -218,6 +260,8 @@
                 </div>
 
 
+                <!-- CURD -->
+
                 <div class="extra-product-row">
 
                     <label>
@@ -256,6 +300,8 @@
 
                 </div>
 
+
+                <!-- GHEE -->
 
                 <div class="extra-product-row">
 
@@ -298,7 +344,9 @@
             </div>
 
 
-            <!-- ACTIONS -->
+            <!-- =================================================
+                 ACTIONS
+            ================================================== -->
 
             <div class="delivery-actions">
 
@@ -322,7 +370,7 @@
             </div>
 
 
-            <!-- PREVIOUS -->
+            <!-- PREVIOUS CUSTOMER -->
 
             <button
                 id="previousBtn"
@@ -338,7 +386,9 @@
     </div>
 
 
-    <!-- COMPLETED -->
+    <!-- =====================================================
+         COMPLETION
+    ====================================================== -->
 
     <div
         id="completionArea"
@@ -350,13 +400,16 @@
             🎉
         </div>
 
+
         <h2>
-            Today's Delivery Completed
+            Delivery Completed
         </h2>
 
-        <p>
+
+        <p id="completionDateText">
             All customers have been processed.
         </p>
+
 
         <div
             id="completionStats"
@@ -393,8 +446,16 @@
 </div>
 
 
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script src="app.js"></script>
+
 <script src="database.js"></script>
+
 <script src="delivery.js"></script>
+
 
 </body>
 
