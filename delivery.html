@@ -11,7 +11,6 @@
     >
 
     <title>Milk Manager - Delivery</title>
-
     <script src="auth.js"></script>
 
     <link
@@ -27,128 +26,29 @@
 <div class="page-container delivery-page">
 
 
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
+    <!-- HEADER -->
 
     <div class="page-header">
 
         <div>
 
-            <h1>🥛 Delivery</h1>
+            <h1>🥛 Today's Delivery</h1>
 
-            <p id="deliveryDateText">
-                Loading date...
-            </p>
+            <p id="deliveryDate"></p>
 
         </div>
 
     </div>
 
 
-
-    <!-- =====================================================
-         DATE SELECTOR
-    ====================================================== -->
-
-    <div
-        style="
-            background:#ffffff;
-            padding:16px;
-            margin:15px 0;
-            border-radius:12px;
-            border:1px solid #dddddd;
-            box-shadow:0 2px 8px rgba(0,0,0,0.08);
-        "
-    >
-
-        <label
-            for="deliveryDatePicker"
-            style="
-                display:block;
-                font-weight:600;
-                margin-bottom:8px;
-                font-size:15px;
-                color:#222222;
-            "
-        >
-            📅 Select Delivery Date
-        </label>
-
-
-        <div
-            style="
-                display:flex;
-                gap:10px;
-                align-items:center;
-                width:100%;
-            "
-        >
-
-            <input
-                type="date"
-                id="deliveryDatePicker"
-                style="
-                    flex:1;
-                    min-height:46px;
-                    padding:8px 10px;
-                    border:1px solid #bbbbbb;
-                    border-radius:8px;
-                    background:#ffffff;
-                    color:#222222;
-                    font-size:16px;
-                    box-sizing:border-box;
-                    min-width:0;
-                "
-            >
-
-
-            <button
-                type="button"
-                id="todayBtn"
-                style="
-                    min-height:46px;
-                    padding:8px 14px;
-                    border:none;
-                    border-radius:8px;
-                    background:#222222;
-                    color:#ffffff;
-                    font-size:14px;
-                    font-weight:600;
-                    cursor:pointer;
-                    white-space:nowrap;
-                "
-            >
-                Today
-            </button>
-
-        </div>
-
-
-        <p
-            style="
-                margin:10px 0 0;
-                font-size:13px;
-                color:#666666;
-            "
-        >
-            Select the date for which you want to manage deliveries.
-        </p>
-
-    </div>
-
-
-
-    <!-- =====================================================
-         PROGRESS
-    ====================================================== -->
+    <!-- PROGRESS -->
 
     <div class="delivery-progress-box">
 
         <div class="delivery-progress-top">
 
             <strong id="deliveryProgressText">
-                0 / 0 Completed
+                0 / 0
             </strong>
 
             <span id="deliveryPercent">
@@ -170,20 +70,16 @@
     </div>
 
 
-
-    <!-- =====================================================
-         CUSTOMER AREA
-    ====================================================== -->
+    <!-- CUSTOMER CARD -->
 
     <div
         id="customerArea"
         class="delivery-customer-area"
     >
 
+
         <div class="delivery-customer-card">
 
-
-            <!-- CUSTOMER HEADER -->
 
             <div class="delivery-customer-header">
 
@@ -191,7 +87,7 @@
                     id="customerAvatar"
                     class="delivery-avatar"
                 >
-                    C
+                    RK
                 </div>
 
 
@@ -210,9 +106,6 @@
             </div>
 
 
-
-            <!-- ADDRESS -->
-
             <div class="delivery-address">
 
                 📍
@@ -224,10 +117,7 @@
             </div>
 
 
-
-            <!-- =================================================
-                 MILK
-            ================================================== -->
+            <!-- MILK -->
 
             <div class="delivery-product-box">
 
@@ -238,7 +128,7 @@
                     </span>
 
                     <small>
-                        Delivery quantity
+                        Today's quantity
                     </small>
 
                 </div>
@@ -280,10 +170,7 @@
             </div>
 
 
-
-            <!-- =================================================
-                 EXTRA PRODUCTS
-            ================================================== -->
+            <!-- EXTRA PRODUCTS -->
 
             <div class="delivery-extra-products">
 
@@ -292,14 +179,11 @@
                 </h3>
 
 
-                <!-- PANEER -->
-
                 <div class="extra-product-row">
 
                     <label>
                         🧀 Paneer
                     </label>
-
 
                     <div class="small-quantity">
 
@@ -310,7 +194,6 @@
                             −
                         </button>
 
-
                         <input
                             type="number"
                             id="paneerQuantity"
@@ -319,11 +202,9 @@
                             value="0"
                         >
 
-
                         <span>
                             kg
                         </span>
-
 
                         <button
                             type="button"
@@ -337,15 +218,11 @@
                 </div>
 
 
-
-                <!-- CURD -->
-
                 <div class="extra-product-row">
 
                     <label>
                         🥣 Curd
                     </label>
-
 
                     <div class="small-quantity">
 
@@ -356,7 +233,6 @@
                             −
                         </button>
 
-
                         <input
                             type="number"
                             id="curdQuantity"
@@ -365,11 +241,9 @@
                             value="0"
                         >
 
-
                         <span>
                             kg
                         </span>
-
 
                         <button
                             type="button"
@@ -383,15 +257,11 @@
                 </div>
 
 
-
-                <!-- GHEE -->
-
                 <div class="extra-product-row">
 
                     <label>
                         🧈 Ghee
                     </label>
-
 
                     <div class="small-quantity">
 
@@ -402,7 +272,6 @@
                             −
                         </button>
 
-
                         <input
                             type="number"
                             id="gheeQuantity"
@@ -411,11 +280,9 @@
                             value="0"
                         >
 
-
                         <span>
                             kg
                         </span>
-
 
                         <button
                             type="button"
@@ -431,10 +298,7 @@
             </div>
 
 
-
-            <!-- =================================================
-                 ACTION BUTTONS
-            ================================================== -->
+            <!-- ACTIONS -->
 
             <div class="delivery-actions">
 
@@ -458,8 +322,7 @@
             </div>
 
 
-
-            <!-- PREVIOUS CUSTOMER -->
+            <!-- PREVIOUS -->
 
             <button
                 id="previousBtn"
@@ -475,10 +338,7 @@
     </div>
 
 
-
-    <!-- =====================================================
-         COMPLETION AREA
-    ====================================================== -->
+    <!-- COMPLETED -->
 
     <div
         id="completionArea"
@@ -490,16 +350,13 @@
             🎉
         </div>
 
-
         <h2>
-            Delivery Completed
+            Today's Delivery Completed
         </h2>
 
-
-        <p id="completionDateText">
+        <p>
             All customers have been processed.
         </p>
-
 
         <div
             id="completionStats"
@@ -536,15 +393,8 @@
 </div>
 
 
-
-<!-- =========================================================
-     JAVASCRIPT
-========================================================= -->
-
 <script src="database.js"></script>
-
 <script src="delivery.js"></script>
-
 
 </body>
 
