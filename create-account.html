@@ -5,71 +5,160 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Create Account - Milk Manager</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        /* =========================================
+           CREATE ACCOUNT PAGE
+        ========================================= */
+
+        .create-account-page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+        }
+
+        .create-account-box {
+            width: 100%;
+            max-width: 480px;
+            padding: 30px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        .create-account-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .create-account-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e8f5f5;
+            font-size: 35px;
+        }
+
+        .create-account-header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .create-account-header p {
+            margin-top: 8px;
+            color: #777;
+        }
+
+        .create-account-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .create-account-form label {
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .create-account-form input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px;
+            border: 1px solid #d8d8d8;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .create-account-form input:focus {
+            border-color: #0f5555;
+        }
+
+        .create-account-submit {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #0f5555;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .create-account-submit:hover {
+            opacity: 0.9;
+        }
+
+        .back-login {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-login button {
+            border: none;
+            background: none;
+            color: #0f5555;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+    </style>
 
 </head>
 
 
 <body>
 
-<div class="app">
+<div class="create-account-page">
 
 
-    <header class="simple-header">
+    <div class="create-account-box">
 
-        <div>
+
+        <!-- HEADER -->
+
+        <div class="create-account-header">
+
+            <div class="create-account-icon">
+                🥛
+            </div>
 
             <h1>
                 Create Account
             </h1>
 
             <p>
-                Set up your Milk Manager account
+                Create your Milk Manager account
             </p>
 
         </div>
 
-    </header>
+
+        <!-- FORM -->
+
+        <form
+            id="createAccountForm"
+            class="create-account-form"
+        >
 
 
-    <main class="main-content">
-
-
-        <div class="profile-card">
-
-            <div class="big-avatar">
-                🥛
-            </div>
-
-            <div>
-
-                <strong>
-                    Milk Manager
-                </strong>
-
-                <small>
-                    Create your account
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <form id="createAccountForm">
-
-
-            <label>
+            <label for="ownerName">
                 Owner / Distributor Name
             </label>
 
@@ -77,12 +166,11 @@
                 type="text"
                 id="ownerName"
                 placeholder="Enter your name"
-                autocomplete="name"
                 required
             >
 
 
-            <label>
+            <label for="businessName">
                 Business Name
             </label>
 
@@ -90,12 +178,11 @@
                 type="text"
                 id="businessName"
                 placeholder="Enter business name"
-                autocomplete="organization"
                 required
             >
 
 
-            <label>
+            <label for="accountMobile">
                 Mobile Number
             </label>
 
@@ -105,12 +192,11 @@
                 placeholder="Enter 10-digit mobile number"
                 maxlength="10"
                 inputmode="numeric"
-                autocomplete="tel"
                 required
             >
 
 
-            <label>
+            <label for="accountPassword">
                 Password
             </label>
 
@@ -118,12 +204,11 @@
                 type="password"
                 id="accountPassword"
                 placeholder="Minimum 6 characters"
-                autocomplete="new-password"
                 required
             >
 
 
-            <label>
+            <label for="confirmPassword">
                 Confirm Password
             </label>
 
@@ -131,14 +216,13 @@
                 type="password"
                 id="confirmPassword"
                 placeholder="Enter password again"
-                autocomplete="new-password"
                 required
             >
 
 
             <button
                 type="submit"
-                class="login-btn"
+                class="create-account-submit"
             >
                 CREATE ACCOUNT
             </button>
@@ -147,7 +231,9 @@
         </form>
 
 
-        <div class="create-account-link">
+        <!-- LOGIN -->
+
+        <div class="back-login">
 
             <span>
                 Already have an account?
@@ -163,13 +249,11 @@
         </div>
 
 
-    </main>
+    </div>
 
 
 </div>
 
-
-<!-- APP JAVASCRIPT -->
 
 <script src="app.js"></script>
 
