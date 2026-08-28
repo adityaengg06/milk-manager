@@ -1,63 +1,13 @@
-/* =====================================================
+/* =========================================================
    MILK MANAGER
    CUSTOMERS MODULE
-   ===================================================== */
+   DATABASE CONNECTED VERSION
+========================================================= */
 
 
-/* -----------------------------------------------------
-   STORAGE KEY
------------------------------------------------------ */
-
-const CUSTOMER_STORAGE_KEY = "milkManagerCustomers";
-
-
-/* -----------------------------------------------------
-   GET CUSTOMERS
------------------------------------------------------ */
-
-function getCustomers() {
-
-    const savedCustomers =
-        localStorage.getItem(CUSTOMER_STORAGE_KEY);
-
-    if (!savedCustomers) {
-        return [];
-    }
-
-    try {
-
-        return JSON.parse(savedCustomers);
-
-    } catch (error) {
-
-        console.error(
-            "Unable to read customers:",
-            error
-        );
-
-        return [];
-
-    }
-}
-
-
-/* -----------------------------------------------------
-   SAVE CUSTOMERS
------------------------------------------------------ */
-
-function saveCustomers(customers) {
-
-    localStorage.setItem(
-        CUSTOMER_STORAGE_KEY,
-        JSON.stringify(customers)
-    );
-
-}
-
-
-/* -----------------------------------------------------
+/* =========================================================
    PAGE ELEMENTS
------------------------------------------------------ */
+========================================================= */
 
 const customerList =
     document.getElementById("customerList");
@@ -84,42 +34,44 @@ const customerSearch =
     document.getElementById("customerSearch");
 
 
-/* -----------------------------------------------------
+/* =========================================================
    OPEN MODAL
------------------------------------------------------ */
+========================================================= */
 
 function openCustomerModal() {
+
+    if (!customerModal) return;
 
     customerModal.classList.add("show");
 
     setTimeout(() => {
 
-        const nameInput =
+        const input =
             document.getElementById("customerName");
 
-        if (nameInput) {
-            nameInput.focus();
+        if (input) {
+            input.focus();
         }
 
     }, 100);
-
 }
 
 
-/* -----------------------------------------------------
+/* =========================================================
    CLOSE MODAL
------------------------------------------------------ */
+========================================================= */
 
-function closeModal() {
+function closeCustomerModalWindow() {
+
+    if (!customerModal) return;
 
     customerModal.classList.remove("show");
-
 }
 
 
-/* -----------------------------------------------------
+/* =========================================================
    BUTTON EVENTS
------------------------------------------------------ */
+========================================================= */
 
 if (addCustomerBtn) {
 
@@ -135,7 +87,7 @@ if (closeCustomerModal) {
 
     closeCustomerModal.addEventListener(
         "click",
-        closeModal
+        closeCustomerModalWindow
     );
 
 }
@@ -145,15 +97,11 @@ if (cancelCustomerBtn) {
 
     cancelCustomerBtn.addEventListener(
         "click",
-        closeModal
+        closeCustomerModalWindow
     );
 
 }
 
-
-/* -----------------------------------------------------
-   CLOSE WHEN CLICKING OUTSIDE MODAL
------------------------------------------------------ */
 
 if (customerModal) {
 
@@ -161,9 +109,12 @@ if (customerModal) {
         "click",
         function(event) {
 
-            if (event.target === customerModal) {
+            if (
+                event.target ===
+                customerModal
+            ) {
 
-                closeModal();
+                closeCustomerModalWindow();
 
             }
 
@@ -173,82 +124,110 @@ if (customerModal) {
 }
 
 
-/* -----------------------------------------------------
+/* =========================================================
    CREATE CUSTOMER CARD
------------------------------------------------------ */
+========================================================= */
 
 function createCustomerCard(customer) {
 
     const card =
         document.createElement("div");
 
-    card.className = "customer-card";
+    card.className =
+        "customer-card";
+
+
+    const name =
+        customer.name || "Customer";
+
 
     const initials =
-        customer.name
+        name
             .split(" ")
+            .filter(Boolean)
             .map(word => word.charAt(0))
             .join("")
             .substring(0, 2)
             .toUpperCase();
 
 
-    const today =
-        new Date().toLocaleDateString(
-            "en-IN",
-            {
-                day: "2-digit",
-                month: "short",
-                year: "numeric"
-            }
-        );
+    const milk =
+        Number(customer.milk) || 0;
+
+
+    const rate =
+        Number(customer.milkRate) || 0;
+
+
+    const phone =
+        customer.phone || "-";
+
+
+    const address =
+        customer.address || "-";
+
+
+    const status =
+        customer.active === false
+            ? "inactive"
+            : "active";
 
 
     card.innerHTML = `
 
         <div class="customer-avatar">
-            ${initials}
+            ${escapeHTML(initials)}
         </div>
+
 
         <div class="customer-info">
 
             <h3>
-                ${escapeHTML(customer.name)}
+                ${escapeHTML(name)}
             </h3>
 
-            <p>
-                📞 ${escapeHTML(customer.mobile)}
-            </p>
 
             <p>
-                📍 ${escapeHTML(customer.address)}
+                📞 ${escapeHTML(phone)}
             </p>
 
+
             <p>
-                🥛 ${customer.milkQuantity} L/day
-                • ₹${customer.rate}/L
+                📍 ${escapeHTML(address)}
             </p>
+
+
+            <p>
+                🥛 ${milk} L/day
+                • ₹${rate}/L
+            </p>
+
 
             <small>
-                Added ${today}
+                ${status === "active"
+                    ? "Active Customer"
+                    : "Inactive Customer"}
             </small>
 
         </div>
 
+
         <div class="customer-actions">
 
-            <span class="status-badge ${customer.status}">
+            <span class="status-badge ${status}">
                 ${
-                    customer.status === "active"
-                    ? "Active"
-                    : "Inactive"
+                    status === "active"
+                        ? "Active"
+                        : "Inactive"
                 }
             </span>
+
 
             <button
                 class="delete-customer-btn"
                 data-id="${customer.id}"
                 title="Delete customer"
+                type="button"
             >
                 🗑️
             </button>
@@ -270,7 +249,9 @@ function createCustomerCard(customer) {
             "click",
             function() {
 
-                deleteCustomer(customer.id);
+                deleteCustomerFromDatabase(
+                    customer.id
+                );
 
             }
         );
@@ -282,65 +263,92 @@ function createCustomerCard(customer) {
 }
 
 
-/* -----------------------------------------------------
+/* =========================================================
    DISPLAY CUSTOMERS
------------------------------------------------------ */
+========================================================= */
 
-function displayCustomers(searchText = "") {
+function displayCustomers(
+    searchText = ""
+) {
+
+    if (!customerList) return;
+
+
+    /*
+       IMPORTANT:
+       Customers now come from
+       milkManagerDB.
+    */
 
     const customers =
         getCustomers();
 
+
     customerList.innerHTML = "";
 
 
+    const search =
+        searchText
+            .toLowerCase()
+            .trim();
+
+
     const filteredCustomers =
-        customers.filter(customer => {
+        customers.filter(
+            customer => {
 
-            const search =
-                searchText
-                    .toLowerCase()
-                    .trim();
+                if (!search) {
+                    return true;
+                }
 
-            if (!search) {
-                return true;
+
+                const name =
+                    String(
+                        customer.name || ""
+                    ).toLowerCase();
+
+
+                const phone =
+                    String(
+                        customer.phone || ""
+                    );
+
+
+                const address =
+                    String(
+                        customer.address || ""
+                    ).toLowerCase();
+
+
+                return (
+                    name.includes(search) ||
+                    phone.includes(search) ||
+                    address.includes(search)
+                );
+
             }
-
-            return (
-
-                customer.name
-                    .toLowerCase()
-                    .includes(search)
-
-                ||
-
-                customer.mobile
-                    .includes(search)
-
-                ||
-
-                customer.address
-                    .toLowerCase()
-                    .includes(search)
-
-            );
-
-        });
+        );
 
 
-    customerCount.textContent =
-        `${filteredCustomers.length} Customer${
-            filteredCustomers.length !== 1
-            ? "s"
-            : ""
-        }`;
+    if (customerCount) {
+
+        customerCount.textContent =
+            `${filteredCustomers.length} Customer${
+                filteredCustomers.length !== 1
+                    ? "s"
+                    : ""
+            }`;
+
+    }
 
 
-    /* -------------------------------------------------
+    /* =====================================================
        EMPTY STATE
-    ------------------------------------------------- */
+    ===================================================== */
 
-    if (filteredCustomers.length === 0) {
+    if (
+        filteredCustomers.length === 0
+    ) {
 
         customerList.innerHTML = `
 
@@ -355,13 +363,14 @@ function displayCustomers(searchText = "") {
                 </h3>
 
                 <p>
-                    Add your first customer to
-                    start managing deliveries.
+                    Add your first customer
+                    to start managing deliveries.
                 </p>
 
                 <button
                     class="primary-btn"
                     id="emptyAddCustomerBtn"
+                    type="button"
                 >
                     + Add Customer
                 </button>
@@ -386,28 +395,34 @@ function displayCustomers(searchText = "") {
 
         }
 
+
         return;
+
     }
 
 
-    /* -------------------------------------------------
+    /* =====================================================
        SHOW CUSTOMERS
-    ------------------------------------------------- */
+    ===================================================== */
 
-    filteredCustomers.forEach(customer => {
+    filteredCustomers.forEach(
+        customer => {
 
-        customerList.appendChild(
-            createCustomerCard(customer)
-        );
+            customerList.appendChild(
+                createCustomerCard(
+                    customer
+                )
+            );
 
-    });
+        }
+    );
 
 }
 
 
-/* -----------------------------------------------------
+/* =========================================================
    ADD CUSTOMER
------------------------------------------------------ */
+========================================================= */
 
 if (customerForm) {
 
@@ -418,52 +433,68 @@ if (customerForm) {
             event.preventDefault();
 
 
+            /* =================================================
+               GET FORM VALUES
+            ================================================= */
+
             const name =
                 document
-                    .getElementById("customerName")
+                    .getElementById(
+                        "customerName"
+                    )
                     .value
                     .trim();
 
 
             const mobile =
                 document
-                    .getElementById("customerMobile")
+                    .getElementById(
+                        "customerMobile"
+                    )
                     .value
                     .trim();
 
 
             const address =
                 document
-                    .getElementById("customerAddress")
+                    .getElementById(
+                        "customerAddress"
+                    )
                     .value
                     .trim();
 
 
-            const milkQuantity =
+            const milk =
                 Number(
                     document
-                        .getElementById("milkQuantity")
+                        .getElementById(
+                            "milkQuantity"
+                        )
                         .value
                 );
 
 
-            const rate =
+            const milkRate =
                 Number(
                     document
-                        .getElementById("milkRate")
+                        .getElementById(
+                            "milkRate"
+                        )
                         .value
                 );
 
 
             const status =
                 document
-                    .getElementById("customerStatus")
+                    .getElementById(
+                        "customerStatus"
+                    )
                     .value;
 
 
-            /* -----------------------------------------
+            /* =================================================
                VALIDATION
-            ----------------------------------------- */
+            ================================================= */
 
             if (!name) {
 
@@ -476,7 +507,11 @@ if (customerForm) {
             }
 
 
-            if (!/^[0-9]{10}$/.test(mobile)) {
+            if (
+                !/^[0-9]{10}$/.test(
+                    mobile
+                )
+            ) {
 
                 alert(
                     "Please enter a valid 10-digit mobile number."
@@ -498,7 +533,7 @@ if (customerForm) {
             }
 
 
-            if (milkQuantity <= 0) {
+            if (milk <= 0) {
 
                 alert(
                     "Milk quantity must be greater than 0."
@@ -509,7 +544,7 @@ if (customerForm) {
             }
 
 
-            if (rate <= 0) {
+            if (milkRate <= 0) {
 
                 alert(
                     "Milk rate must be greater than 0."
@@ -520,22 +555,20 @@ if (customerForm) {
             }
 
 
-            /* -----------------------------------------
-               GET EXISTING CUSTOMERS
-            ----------------------------------------- */
+            /* =================================================
+               CHECK DUPLICATE
+            ================================================= */
 
-            const customers =
-                getCustomers();
+            const existingCustomers =
+                getAllCustomers();
 
-
-            /* -----------------------------------------
-               CHECK DUPLICATE MOBILE
-            ----------------------------------------- */
 
             const duplicate =
-                customers.some(
+                existingCustomers.some(
                     customer =>
-                        customer.mobile === mobile
+                        customer.phone ===
+                        mobile &&
+                        customer.active !== false
                 );
 
 
@@ -550,86 +583,100 @@ if (customerForm) {
             }
 
 
-            /* -----------------------------------------
-               CREATE CUSTOMER
-            ----------------------------------------- */
+            /* =================================================
+               ADD TO DATABASE
+            ================================================= */
 
-            const newCustomer = {
+            const newCustomer =
+                addCustomer({
 
-                id:
-                    Date.now().toString(),
+                    name:
+                        name,
 
-                name:
-                    name,
+                    phone:
+                        mobile,
 
-                mobile:
-                    mobile,
+                    address:
+                        address,
 
-                address:
-                    address,
+                    milk:
+                        milk,
 
-                milkQuantity:
-                    milkQuantity,
+                    milkRate:
+                        milkRate
 
-                rate:
-                    rate,
-
-                status:
-                    status,
-
-                createdAt:
-                    new Date().toISOString()
-
-            };
+                });
 
 
-            /* -----------------------------------------
-               SAVE
-            ----------------------------------------- */
+            /*
+               If inactive was selected,
+               mark customer inactive.
+            */
 
-            customers.push(
-                newCustomer
-            );
+            if (
+                status === "inactive"
+            ) {
 
-            saveCustomers(
-                customers
-            );
+                updateCustomer(
+                    newCustomer.id,
+                    {
+                        active: false
+                    }
+                );
+
+            }
 
 
-            /* -----------------------------------------
+            /* =================================================
                RESET FORM
-            ----------------------------------------- */
+            ================================================= */
 
             customerForm.reset();
 
 
-            document.getElementById(
-                "milkQuantity"
-            ).value = 2;
+            const milkInput =
+                document.getElementById(
+                    "milkQuantity"
+                );
 
 
-            document.getElementById(
-                "milkRate"
-            ).value = 60;
+            const rateInput =
+                document.getElementById(
+                    "milkRate"
+                );
 
 
-            /* -----------------------------------------
+            if (milkInput) {
+
+                milkInput.value = 2;
+
+            }
+
+
+            if (rateInput) {
+
+                rateInput.value = 60;
+
+            }
+
+
+            /* =================================================
                CLOSE MODAL
-            ----------------------------------------- */
+            ================================================= */
 
-            closeModal();
+            closeCustomerModalWindow();
 
 
-            /* -----------------------------------------
-               REFRESH LIST
-            ----------------------------------------- */
+            /* =================================================
+               REFRESH
+            ================================================= */
 
             displayCustomers();
 
 
-            /* -----------------------------------------
-               SUCCESS MESSAGE
-            ----------------------------------------- */
+            /* =================================================
+               SUCCESS
+            ================================================= */
 
             alert(
                 `${name} has been added successfully!`
@@ -641,66 +688,65 @@ if (customerForm) {
 }
 
 
-/* -----------------------------------------------------
+/* =========================================================
    DELETE CUSTOMER
------------------------------------------------------ */
+========================================================= */
 
-function deleteCustomer(id) {
-
-    const customers =
-        getCustomers();
-
+function deleteCustomerFromDatabase(
+    customerId
+) {
 
     const customer =
-        customers.find(
-            item => item.id === id
-        );
+        getCustomer(customerId);
 
 
     if (!customer) {
+
         return;
+
     }
 
 
-    const confirmDelete =
+    const confirmed =
         confirm(
             `Delete ${customer.name} from customers?`
         );
 
 
-    if (!confirmDelete) {
+    if (!confirmed) {
+
         return;
+
     }
 
 
-    const updatedCustomers =
-        customers.filter(
-            item => item.id !== id
+    const result =
+        deleteCustomer(
+            customerId
         );
 
 
-    saveCustomers(
-        updatedCustomers
-    );
+    if (result) {
+
+        displayCustomers(
+            customerSearch
+                ? customerSearch.value
+                : ""
+        );
 
 
-    displayCustomers(
-        customerSearch
-            ? customerSearch.value
-            : ""
-    );
+        alert(
+            `${customer.name} has been deleted.`
+        );
 
-
-    alert(
-        `${customer.name} has been deleted.`
-    );
+    }
 
 }
 
 
-/* -----------------------------------------------------
+/* =========================================================
    SEARCH
------------------------------------------------------ */
+========================================================= */
 
 if (customerSearch) {
 
@@ -718,10 +764,9 @@ if (customerSearch) {
 }
 
 
-/* -----------------------------------------------------
+/* =========================================================
    ESCAPE HTML
-   Prevents HTML injection
------------------------------------------------------ */
+========================================================= */
 
 function escapeHTML(value) {
 
@@ -755,8 +800,8 @@ function escapeHTML(value) {
 }
 
 
-/* -----------------------------------------------------
+/* =========================================================
    INITIAL LOAD
------------------------------------------------------ */
+========================================================= */
 
 displayCustomers();

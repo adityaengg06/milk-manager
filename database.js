@@ -274,8 +274,12 @@ function updateCustomer(id, updatedData) {
         updatedData.phone ?? customer.phone;
 
     customer.address =
-        updatedData.address ?? customer.address;
+    updatedData.address ?? customer.address;
 
+customer.active =
+    updatedData.active ?? customer.active;
+
+customer.milk =
     customer.milk =
         Number(updatedData.milk ?? customer.milk);
 
