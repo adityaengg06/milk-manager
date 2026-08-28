@@ -3,13 +3,8 @@
    DATABASE SYSTEM
 ========================================================= */
 
-
-/* =========================================================
-   DATABASE KEY
-========================================================= */
-
-const MILK_MANAGER_DB =
-    "milkManagerDB";
+const MILK_MANAGER_DB = "milkManagerDB";
+const OLD_CUSTOMERS_KEY = "milkManagerCustomers";
 
 
 /* =========================================================
@@ -41,16 +36,36 @@ function getDB() {
         );
 
 
-    if (!saved) {
+    let db;
 
-        return {
+
+    if (saved) {
+
+        try {
+
+            db = JSON.parse(saved);
+
+        } catch (error) {
+
+            console.error(
+                "Database JSON error:",
+                error
+            );
+
+            db = null;
+
+        }
+
+    }
+
+
+    if (!db) {
+
+        db = {
 
             customers: [],
-
             deliveries: [],
-
             bills: [],
-
             payments: []
 
         };
@@ -58,58 +73,79 @@ function getDB() {
     }
 
 
-    try {
+    /* Make sure sections exist */
 
-        const db =
-            JSON.parse(saved);
+    if (!Array.isArray(db.customers)) {
+        db.customers = [];
+    }
+
+    if (!Array.isArray(db.deliveries)) {
+        db.deliveries = [];
+    }
+
+    if (!Array.isArray(db.bills)) {
+        db.bills = [];
+    }
+
+    if (!Array.isArray(db.payments)) {
+        db.payments = [];
+    }
 
 
-        /*
-           Make sure all sections exist
-        */
+    /*
+       IMPORT OLD CUSTOMERS
+       if database has no customers
+    */
 
-        if (!Array.isArray(db.customers)) {
-            db.customers = [];
+    if (db.customers.length === 0) {
+
+        const oldCustomers =
+            localStorage.getItem(
+                OLD_CUSTOMERS_KEY
+            );
+
+
+        if (oldCustomers) {
+
+            try {
+
+                const parsed =
+                    JSON.parse(
+                        oldCustomers
+                    );
+
+
+                if (
+                    Array.isArray(parsed) &&
+                    parsed.length > 0
+                ) {
+
+                    db.customers =
+                        parsed;
+
+
+                    localStorage.setItem(
+                        MILK_MANAGER_DB,
+                        JSON.stringify(db)
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Old customer data error:",
+                    error
+                );
+
+            }
+
         }
-
-        if (!Array.isArray(db.deliveries)) {
-            db.deliveries = [];
-        }
-
-        if (!Array.isArray(db.bills)) {
-            db.bills = [];
-        }
-
-        if (!Array.isArray(db.payments)) {
-            db.payments = [];
-        }
-
-
-        return db;
 
     }
 
-    catch (error) {
 
-        console.error(
-            "Database error:",
-            error
-        );
-
-
-        return {
-
-            customers: [],
-
-            deliveries: [],
-
-            bills: [],
-
-            payments: []
-
-        };
-
-    }
+    return db;
 
 }
 
@@ -127,20 +163,40 @@ function saveDB(db) {
             JSON.stringify(db)
         );
 
+
+        /*
+           Keep old customer storage
+           synchronized for compatibility.
+        */
+
+        if (
+            Array.isArray(db.customers)
+        ) {
+
+            localStorage.setItem(
+                OLD_CUSTOMERS_KEY,
+                JSON.stringify(
+                    db.customers
+                )
+            );
+
+        }
+
+
         return true;
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
         console.error(
             "Unable to save database:",
             error
         );
 
+
         alert(
             "Unable to save data."
         );
+
 
         return false;
 
