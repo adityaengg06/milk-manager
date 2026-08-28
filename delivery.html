@@ -1,426 +1,113 @@
 /* =========================================================
    MILK MANAGER
-   DAILY DELIVERY SYSTEM
-   ONE CUSTOMER AT A TIME
+   DATABASE SYSTEM
 ========================================================= */
 
 
 /* =========================================================
-   STATE
+   DATABASE KEY
 ========================================================= */
 
-let customers = [];
-let currentIndex = 0;
+const MILK_MANAGER_DB =
+    "milkManagerDB";
 
 
 /* =========================================================
-   ELEMENTS
+   GENERATE ID
 ========================================================= */
 
-const customerArea =
-    document.getElementById("customerArea");
-
-const completionArea =
-    document.getElementById("completionArea");
-
-const customerName =
-    document.getElementById("customerName");
-
-const customerPhone =
-    document.getElementById("customerPhone");
-
-const customerAddress =
-    document.getElementById("customerAddress");
-
-const customerAvatar =
-    document.getElementById("customerAvatar");
-
-const milkQuantity =
-    document.getElementById("milkQuantity");
-
-const paneerQuantity =
-    document.getElementById("paneerQuantity");
-
-const curdQuantity =
-    document.getElementById("curdQuantity");
-
-const gheeQuantity =
-    document.getElementById("gheeQuantity");
-
-const deliveryProgressText =
-    document.getElementById("deliveryProgressText");
-
-const deliveryPercent =
-    document.getElementById("deliveryPercent");
-
-const deliveryProgressBar =
-    document.getElementById("deliveryProgressBar");
-
-
-/* =========================================================
-   DATE
-========================================================= */
-
-function today() {
-
-    const d = new Date();
+function generateID(prefix) {
 
     return (
-        d.getFullYear() +
-        "-" +
-        String(d.getMonth() + 1).padStart(2, "0") +
-        "-" +
-        String(d.getDate()).padStart(2, "0")
+        prefix +
+        Date.now() +
+        Math.random()
+            .toString(36)
+            .substring(2, 7)
     );
 
 }
 
 
 /* =========================================================
-   DISPLAY DATE
+   GET DATABASE
 ========================================================= */
 
-function displayToday() {
-
-    const dateElement =
-        document.getElementById("deliveryDate");
-
-    if (!dateElement) {
-        return;
-    }
-
-    dateElement.textContent =
-        new Date().toLocaleDateString(
-            "en-IN",
-            {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            }
-        );
-
-}
-
-
-/* =========================================================
-   GET TODAY'S RECORD
-========================================================= */
-
-function getTodayRecord(customerId) {
-
-    const db = getDB();
-
-    if (
-        !db ||
-        !Array.isArray(db.deliveries)
-    ) {
-        return null;
-    }
-
-    return db.deliveries.find(
-        delivery =>
-            String(delivery.customerId) ===
-            String(customerId) &&
-            delivery.date === today()
-    ) || null;
-
-}
-
-
-/* =========================================================
-   CHECK COMPLETED
-========================================================= */
-
-function isCustomerCompleted(customerId) {
-
-    return Boolean(
-        getTodayRecord(customerId)
-    );
-
-}
-
-
-/* =========================================================
-   LOAD CUSTOMERS
-========================================================= */
-
-function loadCustomers() {
-
-    customers = getCustomers();
-
-    if (!Array.isArray(customers)) {
-        customers = [];
-    }
-
-
-    if (customers.length === 0) {
-
-        if (customerArea) {
-            customerArea.style.display = "none";
-        }
-
-        if (completionArea) {
-            completionArea.style.display = "block";
-        }
-
-        const stats =
-            document.getElementById(
-                "completionStats"
-            );
-
-        if (stats) {
-            stats.textContent =
-                "No customers available.";
-        }
-
-        return;
-
-    }
-
-
-    /*
-       Find first customer who has
-       not been processed today.
-    */
-
-    const firstPending =
-        customers.findIndex(
-            customer =>
-                !isCustomerCompleted(
-                    customer.id
-                )
-        );
-
-
-    if (firstPending !== -1) {
-
-        currentIndex =
-            firstPending;
-
-        renderCustomer();
-
-    } else {
-
-        currentIndex =
-            customers.length;
-
-        showCompletion();
-
-    }
-
-}
-
-
-/* =========================================================
-   RENDER CUSTOMER
-========================================================= */
-
-function renderCustomer() {
-
-    if (
-        currentIndex < 0 ||
-        currentIndex >= customers.length
-    ) {
-
-        showCompletion();
-
-        return;
-
-    }
-
-
-    if (customerArea) {
-        customerArea.style.display = "block";
-    }
-
-    if (completionArea) {
-        completionArea.style.display = "none";
-    }
-
-
-    const customer =
-        customers[currentIndex];
-
-
-    /* CUSTOMER NAME */
-
-    if (customerName) {
-
-        customerName.textContent =
-            customer.name ||
-            "Customer";
-
-    }
-
-
-    /* PHONE */
-
-    if (customerPhone) {
-
-        customerPhone.textContent =
-            "📞 " +
-            (
-                customer.phone ||
-                customer.mobile ||
-                "-"
-            );
-
-    }
-
-
-    /* ADDRESS */
-
-    if (customerAddress) {
-
-        customerAddress.textContent =
-            customer.address ||
-            "Address not available";
-
-    }
-
-
-    /* AVATAR */
-
-    if (customerAvatar) {
-
-        const name =
-            customer.name ||
-            "Customer";
-
-        const initials =
-            name
-                .split(" ")
-                .filter(Boolean)
-                .map(
-                    word => word[0]
-                )
-                .join("")
-                .substring(0, 2)
-                .toUpperCase();
-
-        customerAvatar.textContent =
-            initials || "C";
-
-    }
-
-
-    /* TODAY'S RECORD */
+function getDB() {
 
     const saved =
-        getTodayRecord(
-            customer.id
+        localStorage.getItem(
+            MILK_MANAGER_DB
         );
 
 
-    if (saved) {
+    if (!saved) {
 
-        if (milkQuantity) {
-            milkQuantity.value =
-                saved.milk || 0;
-        }
+        return {
 
-        if (paneerQuantity) {
-            paneerQuantity.value =
-                saved.paneer || 0;
-        }
+            customers: [],
 
-        if (curdQuantity) {
-            curdQuantity.value =
-                saved.curd || 0;
-        }
+            deliveries: [],
 
-        if (gheeQuantity) {
-            gheeQuantity.value =
-                saved.ghee || 0;
-        }
+            bills: [],
 
-    } else {
+            payments: []
 
-        if (milkQuantity) {
-            milkQuantity.value =
-                customer.milk ||
-                customer.quantity ||
-                0;
-        }
-
-        if (paneerQuantity) {
-            paneerQuantity.value = 0;
-        }
-
-        if (curdQuantity) {
-            curdQuantity.value = 0;
-        }
-
-        if (gheeQuantity) {
-            gheeQuantity.value = 0;
-        }
+        };
 
     }
 
 
-    updateProgress();
+    try {
 
-}
-
-
-/* =========================================================
-   UPDATE PROGRESS
-========================================================= */
-
-function updateProgress() {
-
-    const total =
-        customers.length;
-
-    let completed = 0;
+        const db =
+            JSON.parse(saved);
 
 
-    customers.forEach(
-        customer => {
+        /*
+           Make sure all sections exist
+        */
 
-            if (
-                isCustomerCompleted(
-                    customer.id
-                )
-            ) {
-
-                completed++;
-
-            }
-
+        if (!Array.isArray(db.customers)) {
+            db.customers = [];
         }
-    );
+
+        if (!Array.isArray(db.deliveries)) {
+            db.deliveries = [];
+        }
+
+        if (!Array.isArray(db.bills)) {
+            db.bills = [];
+        }
+
+        if (!Array.isArray(db.payments)) {
+            db.payments = [];
+        }
 
 
-    const percent =
-        total === 0
-            ? 0
-            : Math.round(
-                (completed / total) * 100
-            );
-
-
-    if (deliveryProgressText) {
-
-        deliveryProgressText.textContent =
-            `${completed} / ${total} Completed`;
-
-    }
-
-
-    if (deliveryPercent) {
-
-        deliveryPercent.textContent =
-            `${percent}%`;
+        return db;
 
     }
 
+    catch (error) {
 
-    if (deliveryProgressBar) {
+        console.error(
+            "Database error:",
+            error
+        );
 
-        deliveryProgressBar.style.width =
-            percent + "%";
+
+        return {
+
+            customers: [],
+
+            deliveries: [],
+
+            bills: [],
+
+            payments: []
+
+        };
 
     }
 
@@ -428,589 +115,50 @@ function updateProgress() {
 
 
 /* =========================================================
-   SAVE CURRENT DELIVERY
+   SAVE DATABASE
 ========================================================= */
 
-function saveCurrentDelivery(status) {
+function saveDB(db) {
 
-    const customer =
-        customers[currentIndex];
+    try {
 
+        localStorage.setItem(
+            MILK_MANAGER_DB,
+            JSON.stringify(db)
+        );
 
-    if (!customer) {
-        return null;
+        return true;
+
     }
 
+    catch (error) {
+
+        console.error(
+            "Unable to save database:",
+            error
+        );
+
+        alert(
+            "Unable to save data."
+        );
+
+        return false;
+
+    }
+
+}
+
+
+/* =========================================================
+   GET CUSTOMERS
+========================================================= */
+
+function getCustomers() {
 
     const db =
         getDB();
 
 
-    if (
-        !db ||
-        !Array.isArray(db.deliveries)
-    ) {
-
-        console.error(
-            "Database/deliveries not available."
-        );
-
-        return null;
-
-    }
-
-
-    const existing =
-        getTodayRecord(
-            customer.id
-        );
-
-
-    const delivery = {
-
-        id:
-            existing
-                ? existing.id
-                : generateID("D"),
-
-        customerId:
-            customer.id,
-
-        date:
-            today(),
-
-        milk:
-            status === "not-delivered"
-                ? 0
-                : Number(
-                    milkQuantity
-                        ? milkQuantity.value
-                        : 0
-                ) || 0,
-
-        paneer:
-            status === "not-delivered"
-                ? 0
-                : Number(
-                    paneerQuantity
-                        ? paneerQuantity.value
-                        : 0
-                ) || 0,
-
-        curd:
-            status === "not-delivered"
-                ? 0
-                : Number(
-                    curdQuantity
-                        ? curdQuantity.value
-                        : 0
-                ) || 0,
-
-        ghee:
-            status === "not-delivered"
-                ? 0
-                : Number(
-                    gheeQuantity
-                        ? gheeQuantity.value
-                        : 0
-                ) || 0,
-
-        status:
-            status,
-
-        createdAt:
-            existing
-                ? existing.createdAt
-                : new Date().toISOString(),
-
-        updatedAt:
-            new Date().toISOString()
-
-    };
-
-
-    if (existing) {
-
-        const index =
-            db.deliveries.findIndex(
-                item =>
-                    item.id ===
-                    existing.id
-            );
-
-
-        if (index !== -1) {
-
-            db.deliveries[index] =
-                delivery;
-
-        }
-
-    } else {
-
-        db.deliveries.push(
-            delivery
-        );
-
-    }
-
-
-    saveDB(db);
-
-    return delivery;
+    return db.customers || [];
 
 }
-
-
-/* =========================================================
-   NEXT CUSTOMER
-========================================================= */
-
-function moveToNextCustomer() {
-
-    let nextIndex =
-        currentIndex + 1;
-
-
-    while (
-        nextIndex <
-        customers.length
-    ) {
-
-        if (
-            !isCustomerCompleted(
-                customers[nextIndex].id
-            )
-        ) {
-
-            currentIndex =
-                nextIndex;
-
-            renderCustomer();
-
-            return;
-
-        }
-
-
-        nextIndex++;
-
-    }
-
-
-    showCompletion();
-
-}
-
-
-/* =========================================================
-   MARK DELIVERED
-========================================================= */
-
-function markDelivered() {
-
-    const customer =
-        customers[currentIndex];
-
-
-    if (!customer) {
-        return;
-    }
-
-
-    saveCurrentDelivery(
-        "delivered"
-    );
-
-
-    updateProgress();
-
-
-    setTimeout(
-        function() {
-
-            moveToNextCustomer();
-
-        },
-        200
-    );
-
-}
-
-
-/* =========================================================
-   MARK NOT DELIVERED
-========================================================= */
-
-function markNotDelivered() {
-
-    const customer =
-        customers[currentIndex];
-
-
-    if (!customer) {
-        return;
-    }
-
-
-    const confirmed =
-        confirm(
-            `Mark ${customer.name || "customer"} as NOT DELIVERED today?`
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    saveCurrentDelivery(
-        "not-delivered"
-    );
-
-
-    updateProgress();
-
-
-    setTimeout(
-        function() {
-
-            moveToNextCustomer();
-
-        },
-        200
-    );
-
-}
-
-
-/* =========================================================
-   PREVIOUS CUSTOMER
-========================================================= */
-
-function previousCustomer() {
-
-    if (
-        currentIndex <= 0
-    ) {
-        return;
-    }
-
-
-    currentIndex--;
-
-    renderCustomer();
-
-}
-
-
-/* =========================================================
-   QUANTITY CONTROLS
-========================================================= */
-
-function setupQuantityButtons(
-    minusId,
-    inputId,
-    plusId,
-    step
-) {
-
-    const minus =
-        document.getElementById(
-            minusId
-        );
-
-    const input =
-        document.getElementById(
-            inputId
-        );
-
-    const plus =
-        document.getElementById(
-            plusId
-        );
-
-
-    if (
-        !minus ||
-        !input ||
-        !plus
-    ) {
-        return;
-    }
-
-
-    minus.addEventListener(
-        "click",
-        function() {
-
-            let value =
-                Number(input.value) || 0;
-
-            value =
-                Math.max(
-                    0,
-                    value - step
-                );
-
-            input.value =
-                value;
-
-        }
-    );
-
-
-    plus.addEventListener(
-        "click",
-        function() {
-
-            let value =
-                Number(input.value) || 0;
-
-            value += step;
-
-            input.value =
-                value;
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   COMPLETION
-========================================================= */
-
-function showCompletion() {
-
-    if (customerArea) {
-        customerArea.style.display = "none";
-    }
-
-    if (completionArea) {
-        completionArea.style.display = "block";
-    }
-
-
-    let completed = 0;
-    let delivered = 0;
-    let notDelivered = 0;
-
-
-    customers.forEach(
-        customer => {
-
-            const record =
-                getTodayRecord(
-                    customer.id
-                );
-
-
-            if (record) {
-
-                completed++;
-
-
-                if (
-                    record.status ===
-                    "delivered"
-                ) {
-
-                    delivered++;
-
-                } else {
-
-                    notDelivered++;
-
-                }
-
-            }
-
-        }
-    );
-
-
-    const stats =
-        document.getElementById(
-            "completionStats"
-        );
-
-
-    if (stats) {
-
-        stats.innerHTML = `
-
-            <strong>
-                ${completed} / ${customers.length}
-            </strong>
-
-            <div class="completion-breakdown">
-
-                <span>
-                    ✓ Delivered: ${delivered}
-                </span>
-
-                <span>
-                    ✕ Not Delivered: ${notDelivered}
-                </span>
-
-            </div>
-
-        `;
-
-    }
-
-
-    updateProgress();
-
-}
-
-
-/* =========================================================
-   BUTTON EVENTS
-========================================================= */
-
-const deliveredBtn =
-    document.getElementById(
-        "deliveredBtn"
-    );
-
-if (deliveredBtn) {
-
-    deliveredBtn.addEventListener(
-        "click",
-        markDelivered
-    );
-
-}
-
-
-const notDeliveredBtn =
-    document.getElementById(
-        "notDeliveredBtn"
-    );
-
-if (notDeliveredBtn) {
-
-    notDeliveredBtn.addEventListener(
-        "click",
-        markNotDelivered
-    );
-
-}
-
-
-const previousBtn =
-    document.getElementById(
-        "previousBtn"
-    );
-
-if (previousBtn) {
-
-    previousBtn.addEventListener(
-        "click",
-        previousCustomer
-    );
-
-}
-
-
-/* =========================================================
-   BACK TO HOME
-========================================================= */
-
-const backToHomeBtn =
-    document.getElementById(
-        "backToHomeBtn"
-    );
-
-
-if (backToHomeBtn) {
-
-    backToHomeBtn.addEventListener(
-        "click",
-        function() {
-
-            /*
-               IMPORTANT:
-               Do NOT clear login here.
-               Do NOT remove milkManagerLoggedIn.
-
-               Go directly to the dashboard.
-            */
-
-            window.location.href =
-                "home.html";
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   VIEW REPORT
-========================================================= */
-
-const viewReportBtn =
-    document.getElementById(
-        "viewReportBtn"
-    );
-
-
-if (viewReportBtn) {
-
-    viewReportBtn.addEventListener(
-        "click",
-        function() {
-
-            window.location.href =
-                "daily-report.html";
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   QUANTITY CONTROLS
-========================================================= */
-
-setupQuantityButtons(
-    "milkMinus",
-    "milkQuantity",
-    "milkPlus",
-    0.5
-);
-
-setupQuantityButtons(
-    "paneerMinus",
-    "paneerQuantity",
-    "paneerPlus",
-    0.5
-);
-
-setupQuantityButtons(
-    "curdMinus",
-    "curdQuantity",
-    "curdPlus",
-    0.5
-);
-
-setupQuantityButtons(
-    "gheeMinus",
-    "gheeQuantity",
-    "gheePlus",
-    0.5
-);
-
-
-/* =========================================================
-   START DELIVERY
-========================================================= */
-
-displayToday();
-
-loadCustomers();
