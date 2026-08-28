@@ -1,220 +1,586 @@
-/* =========================================================
-   MILK MANAGER
-   DATABASE SYSTEM
-========================================================= */
+<!DOCTYPE html>
+<html lang="en">
 
-const MILK_MANAGER_DB = "milkManagerDB";
-const OLD_CUSTOMERS_KEY = "milkManagerCustomers";
+<head>
 
+    <meta charset="UTF-8">
 
-/* =========================================================
-   GENERATE ID
-========================================================= */
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-function generateID(prefix) {
+    <title>Daily Delivery - Milk Manager</title>
 
-    return (
-        prefix +
-        Date.now() +
-        Math.random()
-            .toString(36)
-            .substring(2, 7)
-    );
+    <!-- AUTHENTICATION -->
+    <script src="auth.js"></script>
 
-}
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="style.css">
 
+</head>
 
-/* =========================================================
-   GET DATABASE
-========================================================= */
 
-function getDB() {
+<body>
 
-    const saved =
-        localStorage.getItem(
-            MILK_MANAGER_DB
-        );
+<div class="app">
 
 
-    let db;
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
+    <header class="simple-header">
 
-    if (saved) {
+        <div>
 
-        try {
+            <h1>
+                Daily Delivery
+            </h1>
 
-            db = JSON.parse(saved);
+            <p id="deliveryDate">
+                Loading date...
+            </p>
 
-        } catch (error) {
+        </div>
 
-            console.error(
-                "Database JSON error:",
-                error
-            );
+    </header>
 
-            db = null;
 
-        }
 
-    }
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
 
+    <main class="main-content">
 
-    if (!db) {
 
-        db = {
+        <!-- =================================================
+             PROGRESS
+        ================================================== -->
 
-            customers: [],
-            deliveries: [],
-            bills: [],
-            payments: []
+        <section class="delivery-progress-card">
 
-        };
+            <div class="delivery-progress-top">
 
-    }
+                <strong>
+                    Today's Delivery
+                </strong>
 
+                <span id="deliveryPercent">
+                    0%
+                </span>
 
-    /* Make sure sections exist */
+            </div>
 
-    if (!Array.isArray(db.customers)) {
-        db.customers = [];
-    }
 
-    if (!Array.isArray(db.deliveries)) {
-        db.deliveries = [];
-    }
+            <div class="delivery-progress-bar">
 
-    if (!Array.isArray(db.bills)) {
-        db.bills = [];
-    }
+                <div
+                    id="deliveryProgressBar"
+                    class="delivery-progress-fill"
+                    style="width: 0%;"
+                ></div>
 
-    if (!Array.isArray(db.payments)) {
-        db.payments = [];
-    }
+            </div>
 
 
-    /*
-       IMPORT OLD CUSTOMERS
-       if database has no customers
-    */
+            <p id="deliveryProgressText">
+                0 / 0 Completed
+            </p>
 
-    if (db.customers.length === 0) {
+        </section>
 
-        const oldCustomers =
-            localStorage.getItem(
-                OLD_CUSTOMERS_KEY
-            );
 
 
-        if (oldCustomers) {
+        <!-- =================================================
+             CUSTOMER AREA
+        ================================================== -->
 
-            try {
+        <section id="customerArea">
 
-                const parsed =
-                    JSON.parse(
-                        oldCustomers
-                    );
 
+            <!-- CUSTOMER CARD -->
 
-                if (
-                    Array.isArray(parsed) &&
-                    parsed.length > 0
-                ) {
+            <div class="customer-card delivery-customer-card">
 
-                    db.customers =
-                        parsed;
 
+                <div class="customer-avatar">
 
-                    localStorage.setItem(
-                        MILK_MANAGER_DB,
-                        JSON.stringify(db)
-                    );
+                    <div
+                        id="customerAvatar"
+                        class="big-avatar"
+                    >
+                        C
+                    </div>
 
-                }
+                </div>
 
-            } catch (error) {
 
-                console.error(
-                    "Old customer data error:",
-                    error
-                );
+                <div class="customer-info">
 
-            }
+                    <strong id="customerName">
+                        Customer
+                    </strong>
 
-        }
 
-    }
+                    <small id="customerPhone">
+                        📞 -
+                    </small>
 
 
-    return db;
+                    <small id="customerAddress">
+                        Address not available
+                    </small>
 
-}
+                </div>
 
+            </div>
 
-/* =========================================================
-   SAVE DATABASE
-========================================================= */
 
-function saveDB(db) {
 
-    try {
+            <!-- =================================================
+                 MILK
+            ================================================== -->
 
-        localStorage.setItem(
-            MILK_MANAGER_DB,
-            JSON.stringify(db)
-        );
+            <div class="delivery-product-card">
 
+                <div class="product-title">
 
-        /*
-           Keep old customer storage
-           synchronized for compatibility.
-        */
+                    <span>
+                        🥛
+                    </span>
 
-        if (
-            Array.isArray(db.customers)
-        ) {
+                    <strong>
+                        Milk
+                    </strong>
 
-            localStorage.setItem(
-                OLD_CUSTOMERS_KEY,
-                JSON.stringify(
-                    db.customers
-                )
-            );
+                </div>
 
-        }
 
+                <div class="quantity-control">
 
-        return true;
+                    <button
+                        type="button"
+                        id="milkMinus"
+                    >
+                        −
+                    </button>
 
-    } catch (error) {
 
-        console.error(
-            "Unable to save database:",
-            error
-        );
+                    <input
+                        type="number"
+                        id="milkQuantity"
+                        value="0"
+                        min="0"
+                        step="0.5"
+                    >
 
 
-        alert(
-            "Unable to save data."
-        );
+                    <span>
+                        L
+                    </span>
 
 
-        return false;
+                    <button
+                        type="button"
+                        id="milkPlus"
+                    >
+                        +
+                    </button>
 
-    }
+                </div>
 
-}
+            </div>
 
 
-/* =========================================================
-   GET CUSTOMERS
-========================================================= */
 
-function getCustomers() {
+            <!-- =================================================
+                 PANEER
+            ================================================== -->
 
-    const db =
-        getDB();
+            <div class="delivery-product-card">
 
+                <div class="product-title">
 
-    return db.customers || [];
+                    <span>
+                        🧀
+                    </span>
 
-}
+                    <strong>
+                        Paneer
+                    </strong>
+
+                </div>
+
+
+                <div class="quantity-control">
+
+                    <button
+                        type="button"
+                        id="paneerMinus"
+                    >
+                        −
+                    </button>
+
+
+                    <input
+                        type="number"
+                        id="paneerQuantity"
+                        value="0"
+                        min="0"
+                        step="0.5"
+                    >
+
+
+                    <span>
+                        kg
+                    </span>
+
+
+                    <button
+                        type="button"
+                        id="paneerPlus"
+                    >
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 CURD
+            ================================================== -->
+
+            <div class="delivery-product-card">
+
+                <div class="product-title">
+
+                    <span>
+                        🥣
+                    </span>
+
+                    <strong>
+                        Curd
+                    </strong>
+
+                </div>
+
+
+                <div class="quantity-control">
+
+                    <button
+                        type="button"
+                        id="curdMinus"
+                    >
+                        −
+                    </button>
+
+
+                    <input
+                        type="number"
+                        id="curdQuantity"
+                        value="0"
+                        min="0"
+                        step="0.5"
+                    >
+
+
+                    <span>
+                        kg
+                    </span>
+
+
+                    <button
+                        type="button"
+                        id="curdPlus"
+                    >
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 GHEE
+            ================================================== -->
+
+            <div class="delivery-product-card">
+
+                <div class="product-title">
+
+                    <span>
+                        🫙
+                    </span>
+
+                    <strong>
+                        Ghee
+                    </strong>
+
+                </div>
+
+
+                <div class="quantity-control">
+
+                    <button
+                        type="button"
+                        id="gheeMinus"
+                    >
+                        −
+                    </button>
+
+
+                    <input
+                        type="number"
+                        id="gheeQuantity"
+                        value="0"
+                        min="0"
+                        step="0.5"
+                    >
+
+
+                    <span>
+                        kg
+                    </span>
+
+
+                    <button
+                        type="button"
+                        id="gheePlus"
+                    >
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ACTION BUTTONS
+            ================================================== -->
+
+            <div class="delivery-actions">
+
+
+                <button
+                    type="button"
+                    id="deliveredBtn"
+                    class="primary-btn"
+                >
+                    ✓ Delivered
+                </button>
+
+
+                <button
+                    type="button"
+                    id="notDeliveredBtn"
+                    class="secondary-btn"
+                >
+                    ✕ Not Delivered
+                </button>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PREVIOUS
+            ================================================== -->
+
+            <button
+                type="button"
+                id="previousBtn"
+                class="back-btn"
+            >
+                ← Previous Customer
+            </button>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             COMPLETION AREA
+        ====================================================== -->
+
+        <section
+            id="completionArea"
+            style="display: none;"
+        >
+
+            <div class="completion-card">
+
+                <div class="completion-icon">
+                    ✓
+                </div>
+
+
+                <h2>
+                    Today's Delivery Complete
+                </h2>
+
+
+                <p>
+                    All customers have been processed.
+                </p>
+
+
+                <div id="completionStats">
+
+                    0 / 0 Completed
+
+                </div>
+
+
+                <div class="completion-actions">
+
+                    <button
+                        type="button"
+                        id="viewReportBtn"
+                        class="primary-btn"
+                    >
+                        📊 View Daily Report
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="backToHomeBtn"
+                        class="secondary-btn"
+                    >
+                        ← Back to Home
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         BOTTOM NAVIGATION
+    ====================================================== -->
+
+    <nav class="bottom-nav">
+
+
+        <button
+            class="nav-item"
+            type="button"
+            onclick="goTo('home.html')"
+        >
+
+            <span>
+                🏠
+            </span>
+
+            <small>
+                Home
+            </small>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            type="button"
+            onclick="goTo('customers.html')"
+        >
+
+            <span>
+                👥
+            </span>
+
+            <small>
+                Customers
+            </small>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            type="button"
+            onclick="goTo('reports.html')"
+        >
+
+            <span>
+                🥛
+            </span>
+
+            <small>
+                Report
+            </small>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            type="button"
+            onclick="goTo('bills.html')"
+        >
+
+            <span>
+                🧾
+            </span>
+
+            <small>
+                Bills
+            </small>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            type="button"
+            onclick="goTo('settings.html')"
+        >
+
+            <span>
+                ⚙️
+            </span>
+
+            <small>
+                More
+            </small>
+
+        </button>
+
+
+    </nav>
+
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script src="app.js"></script>
+
+<script src="database.js"></script>
+
+<script src="delivery.js"></script>
+
+
+</body>
+
+</html>
