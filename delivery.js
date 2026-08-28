@@ -1,7 +1,7 @@
 /* =========================================================
    MILK MANAGER
-   DELIVERY SYSTEM
-   DATE SELECTABLE
+   DAILY DELIVERY SYSTEM
+   ONE CUSTOMER AT A TIME
 ========================================================= */
 
 
@@ -14,15 +14,6 @@ let customers = [];
 let currentIndex = 0;
 
 
-/*
-   The date currently being worked on.
-   Default = today's date.
-*/
-
-let selectedDate = getTodayDate();
-
-
-
 /* =========================================================
    ELEMENTS
 ========================================================= */
@@ -32,72 +23,60 @@ const customerArea =
         "customerArea"
     );
 
-
 const completionArea =
     document.getElementById(
         "completionArea"
     );
-
 
 const customerName =
     document.getElementById(
         "customerName"
     );
 
-
 const customerPhone =
     document.getElementById(
         "customerPhone"
     );
-
 
 const customerAddress =
     document.getElementById(
         "customerAddress"
     );
 
-
 const customerAvatar =
     document.getElementById(
         "customerAvatar"
     );
-
 
 const milkQuantity =
     document.getElementById(
         "milkQuantity"
     );
 
-
 const paneerQuantity =
     document.getElementById(
         "paneerQuantity"
     );
-
 
 const curdQuantity =
     document.getElementById(
         "curdQuantity"
     );
 
-
 const gheeQuantity =
     document.getElementById(
         "gheeQuantity"
     );
-
 
 const deliveryProgressText =
     document.getElementById(
         "deliveryProgressText"
     );
 
-
 const deliveryPercent =
     document.getElementById(
         "deliveryPercent"
     );
-
 
 const deliveryProgressBar =
     document.getElementById(
@@ -105,56 +84,26 @@ const deliveryProgressBar =
     );
 
 
-const deliveryDatePicker =
-    document.getElementById(
-        "deliveryDatePicker"
-    );
-
-
-const deliveryDateText =
-    document.getElementById(
-        "deliveryDateText"
-    );
-
-
-const todayBtn =
-    document.getElementById(
-        "todayBtn"
-    );
-
-
-
 /* =========================================================
-   TODAY DATE
+   DATE
 ========================================================= */
 
-function getTodayDate() {
+function today() {
 
-    const date =
-        new Date();
-
+    const d = new Date();
 
     const year =
-        date.getFullYear();
-
+        d.getFullYear();
 
     const month =
         String(
-            date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
+            d.getMonth() + 1
+        ).padStart(2, "0");
 
     const day =
         String(
-            date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
+            d.getDate()
+        ).padStart(2, "0");
 
     return (
         year +
@@ -167,190 +116,58 @@ function getTodayDate() {
 }
 
 
-
 /* =========================================================
-   FORMAT DATE
+   DISPLAY DATE
 ========================================================= */
 
-function formatDate(
-    dateString
-) {
+function displayToday() {
 
-    if (!dateString) {
+    const d =
+        new Date();
 
-        return "";
-
-    }
-
-
-    const parts =
-        dateString.split("-");
-
-
-    if (
-        parts.length !== 3
-    ) {
-
-        return dateString;
-
-    }
-
-
-    const date =
-        new Date(
-            Number(parts[0]),
-            Number(parts[1]) - 1,
-            Number(parts[2])
+    document.getElementById(
+        "deliveryDate"
+    ).textContent =
+        d.toLocaleDateString(
+            "en-IN",
+            {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
         );
-
-
-    return date.toLocaleDateString(
-        "en-IN",
-        {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-        }
-    );
 
 }
 
 
-
 /* =========================================================
-   DISPLAY SELECTED DATE
+   GET TODAY'S SAVED RECORD
 ========================================================= */
 
-function displaySelectedDate() {
-
-    const formatted =
-        formatDate(
-            selectedDate
-        );
-
-
-    if (deliveryDateText) {
-
-        deliveryDateText.textContent =
-            formatted;
-
-    }
-
-
-    const completionDateText =
-        document.getElementById(
-            "completionDateText"
-        );
-
-
-    if (completionDateText) {
-
-        completionDateText.textContent =
-            `All customers have been processed for ${formatted}.`;
-
-    }
-
-}
-
-
-
-/* =========================================================
-   GET CUSTOMERS
-========================================================= */
-
-function loadCustomerData() {
-
-    try {
-
-        customers =
-            getCustomers();
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Unable to load customers:",
-            error
-        );
-
-        customers = [];
-
-    }
-
-
-    if (
-        !Array.isArray(
-            customers
-        )
-    ) {
-
-        customers = [];
-
-    }
-
-}
-
-
-
-/* =========================================================
-   GET DELIVERY RECORD
-   FOR SELECTED DATE
-========================================================= */
-
-function getSelectedDateRecord(
+function getTodayRecord(
     customerId
 ) {
 
     const db =
         getDB();
 
-
-    if (
-        !db ||
-        !Array.isArray(
-            db.deliveries
-        )
-    ) {
-
-        return null;
-
-    }
-
-
-    const record =
-        db.deliveries.find(
-            function(delivery) {
-
-                return (
-
-                    String(
-                        delivery.customerId
-                    ) ===
-                    String(
-                        customerId
-                    )
-
-                    &&
-
-                    delivery.date ===
-                    selectedDate
-
-                );
-
-            }
-        );
-
-
-    return record || null;
+    return db.deliveries.find(
+        delivery =>
+            String(
+                delivery.customerId
+            ) ===
+            String(customerId)
+            &&
+            delivery.date ===
+            today()
+    );
 
 }
 
 
-
 /* =========================================================
-   CHECK COMPLETED
+   CHECK WHETHER CUSTOMER IS COMPLETED
 ========================================================= */
 
 function isCustomerCompleted(
@@ -358,7 +175,7 @@ function isCustomerCompleted(
 ) {
 
     return Boolean(
-        getSelectedDateRecord(
+        getTodayRecord(
             customerId
         )
     );
@@ -366,97 +183,34 @@ function isCustomerCompleted(
 }
 
 
-
 /* =========================================================
-   UPDATE PROGRESS
+   LOAD CUSTOMERS
 ========================================================= */
 
-function updateProgress() {
+function loadCustomers() {
 
-    const total =
-        customers.length;
-
-
-    let completed = 0;
+    customers =
+        getCustomers();
 
 
-    customers.forEach(
-        function(customer) {
-
-            if (
-                isCustomerCompleted(
-                    customer.id
-                )
-            ) {
-
-                completed++;
-
-            }
-
-        }
-    );
-
-
-    let percent = 0;
-
-
-    if (total > 0) {
-
-        percent =
-            Math.round(
-                (
-                    completed /
-                    total
-                ) * 100
-            );
-
-    }
-
-
-    if (deliveryProgressText) {
-
-        deliveryProgressText.textContent =
-            `${completed} / ${total} Completed`;
-
-    }
-
-
-    if (deliveryPercent) {
-
-        deliveryPercent.textContent =
-            `${percent}%`;
-
-    }
-
-
-    if (deliveryProgressBar) {
-
-        deliveryProgressBar.style.width =
-            percent + "%";
-
-    }
-
-}
-
-
-
-/* =========================================================
-   LOAD DELIVERY PAGE
-========================================================= */
-
-function loadDeliveryPage() {
-
-    loadCustomerData();
-
-
-    currentIndex = 0;
-
+    /*
+       Keep original customer order.
+    */
 
     if (
         customers.length === 0
     ) {
 
-        showNoCustomers();
+        customerArea.style.display =
+            "none";
+
+        completionArea.style.display =
+            "block";
+
+        document.getElementById(
+            "completionStats"
+        ).textContent =
+            "No customers available.";
 
         return;
 
@@ -464,26 +218,32 @@ function loadDeliveryPage() {
 
 
     /*
-       Find first customer who has
-       NOT been processed for the
-       selected date.
+       Find first customer
+       who hasn't been processed.
     */
 
-    const pendingIndex =
+    const firstPending =
         customers.findIndex(
-            function(customer) {
-
-                return !isCustomerCompleted(
+            customer =>
+                !isCustomerCompleted(
                     customer.id
-                );
-
-            }
+                )
         );
 
 
     if (
-        pendingIndex === -1
+        firstPending !== -1
     ) {
+
+        currentIndex =
+            firstPending;
+
+    }
+    else {
+
+        /*
+           Everyone already completed.
+        */
 
         currentIndex =
             customers.length;
@@ -495,53 +255,9 @@ function loadDeliveryPage() {
     }
 
 
-    currentIndex =
-        pendingIndex;
-
-
     renderCustomer();
 
 }
-
-
-
-/* =========================================================
-   SHOW NO CUSTOMERS
-========================================================= */
-
-function showNoCustomers() {
-
-    if (customerArea) {
-
-        customerArea.style.display =
-            "none";
-
-    }
-
-
-    if (completionArea) {
-
-        completionArea.style.display =
-            "block";
-
-    }
-
-
-    const stats =
-        document.getElementById(
-            "completionStats"
-        );
-
-
-    if (stats) {
-
-        stats.textContent =
-            "No customers available.";
-
-    }
-
-}
-
 
 
 /* =========================================================
@@ -571,20 +287,11 @@ function renderCustomer() {
     }
 
 
-    if (customerArea) {
+    customerArea.style.display =
+        "block";
 
-        customerArea.style.display =
-            "block";
-
-    }
-
-
-    if (completionArea) {
-
-        completionArea.style.display =
-            "none";
-
-    }
+    completionArea.style.display =
+        "none";
 
 
     const customer =
@@ -593,174 +300,87 @@ function renderCustomer() {
         ];
 
 
-    /*
-       NAME
-    */
+    /* CUSTOMER DETAILS */
 
-    if (customerName) {
-
-        customerName.textContent =
-            customer.name ||
-            "Customer";
-
-    }
+    customerName.textContent =
+        customer.name ||
+        "Customer";
 
 
-    /*
-       PHONE
-    */
-
-    if (customerPhone) {
-
-        customerPhone.textContent =
-            "📞 " +
-            (
-                customer.phone ||
-                customer.mobile ||
-                "-"
-            );
-
-    }
+    customerPhone.textContent =
+        "📞 " +
+        (
+            customer.phone ||
+            "-"
+        );
 
 
-    /*
-       ADDRESS
-    */
-
-    if (customerAddress) {
-
-        customerAddress.textContent =
-            customer.address ||
-            "Address not available";
-
-    }
+    customerAddress.textContent =
+        customer.address ||
+        "Address not available";
 
 
-    /*
-       AVATAR
-    */
+    /* AVATAR */
 
-    if (customerAvatar) {
-
-        const name =
-            customer.name ||
-            "Customer";
+    const name =
+        customer.name ||
+        "Customer";
 
 
-        const initials =
-            name
-                .split(" ")
-                .filter(Boolean)
-                .map(
-                    function(word) {
-
-                        return word[0];
-
-                    }
-                )
-                .join("")
-                .substring(
-                    0,
-                    2
-                )
-                .toUpperCase();
+    const initials =
+        name
+            .split(" ")
+            .filter(Boolean)
+            .map(
+                word =>
+                    word[0]
+            )
+            .join("")
+            .substring(0, 2)
+            .toUpperCase();
 
 
-        customerAvatar.textContent =
-            initials ||
-            "C";
-
-    }
+    customerAvatar.textContent =
+        initials ||
+        "C";
 
 
-    /*
-       LOAD SAVED RECORD
-       FOR SELECTED DATE
-    */
+    /* DEFAULT MILK */
 
     const saved =
-        getSelectedDateRecord(
+        getTodayRecord(
             customer.id
         );
 
 
     if (saved) {
 
-        if (milkQuantity) {
+        milkQuantity.value =
+            saved.milk || 0;
 
-            milkQuantity.value =
-                saved.milk || 0;
+        paneerQuantity.value =
+            saved.paneer || 0;
 
-        }
+        curdQuantity.value =
+            saved.curd || 0;
 
-
-        if (paneerQuantity) {
-
-            paneerQuantity.value =
-                saved.paneer || 0;
-
-        }
-
-
-        if (curdQuantity) {
-
-            curdQuantity.value =
-                saved.curd || 0;
-
-        }
-
-
-        if (gheeQuantity) {
-
-            gheeQuantity.value =
-                saved.ghee || 0;
-
-        }
+        gheeQuantity.value =
+            saved.ghee || 0;
 
     }
-
     else {
 
-        /*
-           New date.
-           Use customer's normal
-           milk quantity.
-        */
+        milkQuantity.value =
+            customer.milk || 0;
 
-        if (milkQuantity) {
+        paneerQuantity.value =
+            0;
 
-            milkQuantity.value =
-                Number(
-                    customer.milk ||
-                    customer.quantity ||
-                    0
-                );
+        curdQuantity.value =
+            0;
 
-        }
-
-
-        if (paneerQuantity) {
-
-            paneerQuantity.value =
-                0;
-
-        }
-
-
-        if (curdQuantity) {
-
-            curdQuantity.value =
-                0;
-
-        }
-
-
-        if (gheeQuantity) {
-
-            gheeQuantity.value =
-                0;
-
-        }
+        gheeQuantity.value =
+            0;
 
     }
 
@@ -770,9 +390,75 @@ function renderCustomer() {
 }
 
 
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+function updateProgress() {
+
+    const total =
+        customers.length;
+
+
+    let completed = 0;
+
+
+    customers.forEach(
+        customer => {
+
+            if (
+                isCustomerCompleted(
+                    customer.id
+                )
+            ) {
+
+                completed++;
+
+            }
+
+        }
+    );
+
+
+    /*
+       Current position should represent
+       the customer being handled.
+    */
+
+    const position =
+        Math.min(
+            currentIndex + 1,
+            total
+        );
+
+
+    const percent =
+        total === 0
+            ? 0
+            : Math.round(
+                (
+                    completed /
+                    total
+                ) * 100
+            );
+
+
+    deliveryProgressText.textContent =
+        `${completed} / ${total} Completed`;
+
+
+    deliveryPercent.textContent =
+        `${percent}%`;
+
+
+    deliveryProgressBar.style.width =
+        percent + "%";
+
+}
+
 
 /* =========================================================
-   SAVE DELIVERY
+   SAVE CURRENT DELIVERY
 ========================================================= */
 
 function saveCurrentDelivery(
@@ -787,31 +473,24 @@ function saveCurrentDelivery(
 
     if (!customer) {
 
-        return null;
-
-    }
-
-
-    const db =
-        getDB();
-
-
-    if (
-        !db ||
-        !Array.isArray(
-            db.deliveries
-        )
-    ) {
-
-        return null;
+        return;
 
     }
 
 
     const existing =
-        getSelectedDateRecord(
+        getTodayRecord(
             customer.id
         );
+
+
+    /*
+       Don't create another record.
+       Update today's record if it exists.
+    */
+
+    const db =
+        getDB();
 
 
     const delivery = {
@@ -821,71 +500,47 @@ function saveCurrentDelivery(
                 ? existing.id
                 : generateID("D"),
 
-
         customerId:
             customer.id,
 
-
-        /*
-           THIS IS THE IMPORTANT PART.
-
-           The record is saved against
-           the selected date.
-        */
-
         date:
-            selectedDate,
-
+            today(),
 
         milk:
             status === "not-delivered"
                 ? 0
                 : Number(
-                    milkQuantity
-                        ? milkQuantity.value
-                        : 0
+                    milkQuantity.value
                 ) || 0,
-
 
         paneer:
             status === "not-delivered"
                 ? 0
                 : Number(
-                    paneerQuantity
-                        ? paneerQuantity.value
-                        : 0
+                    paneerQuantity.value
                 ) || 0,
-
 
         curd:
             status === "not-delivered"
                 ? 0
                 : Number(
-                    curdQuantity
-                        ? curdQuantity.value
-                        : 0
+                    curdQuantity.value
                 ) || 0,
-
 
         ghee:
             status === "not-delivered"
                 ? 0
                 : Number(
-                    gheeQuantity
-                        ? gheeQuantity.value
-                        : 0
+                    gheeQuantity.value
                 ) || 0,
-
 
         status:
             status,
-
 
         createdAt:
             existing
                 ? existing.createdAt
                 : new Date().toISOString(),
-
 
         updatedAt:
             new Date().toISOString()
@@ -895,32 +550,22 @@ function saveCurrentDelivery(
 
     if (existing) {
 
-        const existingIndex =
+        const index =
             db.deliveries.findIndex(
-                function(item) {
-
-                    return (
-                        item.id ===
-                        existing.id
-                    );
-
-                }
+                item =>
+                    item.id ===
+                    existing.id
             );
 
 
-        if (
-            existingIndex !== -1
-        ) {
+        if (index !== -1) {
 
-            db.deliveries[
-                existingIndex
-            ] =
+            db.deliveries[index] =
                 delivery;
 
         }
 
     }
-
     else {
 
         db.deliveries.push(
@@ -938,12 +583,15 @@ function saveCurrentDelivery(
 }
 
 
-
 /* =========================================================
-   NEXT CUSTOMER
+   MOVE TO NEXT CUSTOMER
 ========================================================= */
 
 function moveToNextCustomer() {
+
+    /*
+       Find the next pending customer.
+    */
 
     let nextIndex =
         currentIndex + 1;
@@ -956,18 +604,14 @@ function moveToNextCustomer() {
 
         if (
             !isCustomerCompleted(
-                customers[
-                    nextIndex
-                ].id
+                customers[nextIndex].id
             )
         ) {
 
             currentIndex =
                 nextIndex;
 
-
             renderCustomer();
-
 
             return;
 
@@ -979,10 +623,13 @@ function moveToNextCustomer() {
     }
 
 
+    /*
+       No more pending customers.
+    */
+
     showCompletion();
 
 }
-
 
 
 /* =========================================================
@@ -998,9 +645,7 @@ function markDelivered() {
 
 
     if (!customer) {
-
         return;
-
     }
 
 
@@ -1012,8 +657,13 @@ function markDelivered() {
     updateProgress();
 
 
+    /*
+       Small delay makes the
+       transition feel natural.
+    */
+
     setTimeout(
-        function() {
+        () => {
 
             moveToNextCustomer();
 
@@ -1022,7 +672,6 @@ function markDelivered() {
     );
 
 }
-
 
 
 /* =========================================================
@@ -1038,19 +687,17 @@ function markNotDelivered() {
 
 
     if (!customer) {
-
         return;
-
     }
 
 
-    const confirmed =
+    const confirmSkip =
         confirm(
-            `Mark ${customer.name || "customer"} as NOT DELIVERED for ${formatDate(selectedDate)}?`
+            `Mark ${customer.name} as NOT DELIVERED today?`
         );
 
 
-    if (!confirmed) {
+    if (!confirmSkip) {
 
         return;
 
@@ -1066,7 +713,7 @@ function markNotDelivered() {
 
 
     setTimeout(
-        function() {
+        () => {
 
             moveToNextCustomer();
 
@@ -1075,7 +722,6 @@ function markNotDelivered() {
     );
 
 }
-
 
 
 /* =========================================================
@@ -1100,9 +746,8 @@ function previousCustomer() {
 }
 
 
-
 /* =========================================================
-   QUANTITY BUTTONS
+   QUANTITY BUTTON
 ========================================================= */
 
 function setupQuantityButtons(
@@ -1117,12 +762,10 @@ function setupQuantityButtons(
             minusId
         );
 
-
     const input =
         document.getElementById(
             inputId
         );
-
 
     const plus =
         document.getElementById(
@@ -1130,20 +773,9 @@ function setupQuantityButtons(
         );
 
 
-    if (
-        !minus ||
-        !input ||
-        !plus
-    ) {
-
-        return;
-
-    }
-
-
     minus.addEventListener(
         "click",
-        function() {
+        () => {
 
             let value =
                 Number(
@@ -1167,7 +799,7 @@ function setupQuantityButtons(
 
     plus.addEventListener(
         "click",
-        function() {
+        () => {
 
             let value =
                 Number(
@@ -1187,27 +819,17 @@ function setupQuantityButtons(
 }
 
 
-
 /* =========================================================
-   SHOW COMPLETION
+   COMPLETION
 ========================================================= */
 
 function showCompletion() {
 
-    if (customerArea) {
+    customerArea.style.display =
+        "none";
 
-        customerArea.style.display =
-            "none";
-
-    }
-
-
-    if (completionArea) {
-
-        completionArea.style.display =
-            "block";
-
-    }
+    completionArea.style.display =
+        "block";
 
 
     let completed = 0;
@@ -1218,10 +840,10 @@ function showCompletion() {
 
 
     customers.forEach(
-        function(customer) {
+        customer => {
 
             const record =
-                getSelectedDateRecord(
+                getTodayRecord(
                     customer.id
                 );
 
@@ -1239,7 +861,6 @@ function showCompletion() {
                     delivered++;
 
                 }
-
                 else {
 
                     notDelivered++;
@@ -1252,35 +873,27 @@ function showCompletion() {
     );
 
 
-    const stats =
-        document.getElementById(
-            "completionStats"
-        );
+    document.getElementById(
+        "completionStats"
+    ).innerHTML = `
 
+        <strong>
+            ${completed} / ${customers.length}
+        </strong>
 
-    if (stats) {
+        <div class="completion-breakdown">
 
-        stats.innerHTML = `
+            <span>
+                ✓ Delivered: ${delivered}
+            </span>
 
-            <strong>
-                ${completed} / ${customers.length}
-            </strong>
+            <span>
+                ✕ Not Delivered: ${notDelivered}
+            </span>
 
-            <div class="completion-breakdown">
+        </div>
 
-                <span>
-                    ✓ Delivered: ${delivered}
-                </span>
-
-                <span>
-                    ✕ Not Delivered: ${notDelivered}
-                </span>
-
-            </div>
-
-        `;
-
-    }
+    `;
 
 
     updateProgress();
@@ -1288,233 +901,68 @@ function showCompletion() {
 }
 
 
-
-/* =========================================================
-   CHANGE DELIVERY DATE
-========================================================= */
-
-function changeDeliveryDate(
-    newDate
-) {
-
-    if (!newDate) {
-
-        return;
-
-    }
-
-
-    selectedDate =
-        newDate;
-
-
-    currentIndex =
-        0;
-
-
-    displaySelectedDate();
-
-
-    loadDeliveryPage();
-
-}
-
-
-
-/* =========================================================
-   DATE PICKER
-========================================================= */
-
-if (deliveryDatePicker) {
-
-    /*
-       Set today's date initially.
-    */
-
-    deliveryDatePicker.value =
-        getTodayDate();
-
-
-    selectedDate =
-        getTodayDate();
-
-
-    deliveryDatePicker.addEventListener(
-        "change",
-        function() {
-
-            if (!this.value) {
-
-                return;
-
-            }
-
-
-            changeDeliveryDate(
-                this.value
-            );
-
-        }
-    );
-
-}
-
-
-
-/* =========================================================
-   TODAY BUTTON
-========================================================= */
-
-if (todayBtn) {
-
-    todayBtn.addEventListener(
-        "click",
-        function() {
-
-            const today =
-                getTodayDate();
-
-
-            selectedDate =
-                today;
-
-
-            if (deliveryDatePicker) {
-
-                deliveryDatePicker.value =
-                    today;
-
-            }
-
-
-            currentIndex =
-                0;
-
-
-            displaySelectedDate();
-
-
-            loadDeliveryPage();
-
-        }
-    );
-
-}
-
-
-
 /* =========================================================
    BUTTON EVENTS
 ========================================================= */
 
-const deliveredBtn =
-    document.getElementById(
+document
+    .getElementById(
         "deliveredBtn"
-    );
-
-
-if (deliveredBtn) {
-
-    deliveredBtn.addEventListener(
+    )
+    .addEventListener(
         "click",
         markDelivered
     );
 
-}
 
-
-const notDeliveredBtn =
-    document.getElementById(
+document
+    .getElementById(
         "notDeliveredBtn"
-    );
-
-
-if (notDeliveredBtn) {
-
-    notDeliveredBtn.addEventListener(
+    )
+    .addEventListener(
         "click",
         markNotDelivered
     );
 
-}
 
-
-const previousBtn =
-    document.getElementById(
+document
+    .getElementById(
         "previousBtn"
-    );
-
-
-if (previousBtn) {
-
-    previousBtn.addEventListener(
+    )
+    .addEventListener(
         "click",
         previousCustomer
     );
 
-}
 
-
-
-/* =========================================================
-   BACK TO HOME
-========================================================= */
-
-const backToHomeBtn =
-    document.getElementById(
+document
+    .getElementById(
         "backToHomeBtn"
-    );
-
-
-if (backToHomeBtn) {
-
-    backToHomeBtn.addEventListener(
+    )
+    .addEventListener(
         "click",
-        function() {
-
-            /*
-               IMPORTANT:
-
-               Do NOT remove login.
-               Do NOT clear localStorage.
-
-               Just return to dashboard.
-            */
+        () => {
 
             window.location.href =
-                "home.html";
+                "index.html";
 
         }
     );
 
-}
 
-
-
-/* =========================================================
-   VIEW REPORT
-========================================================= */
-
-const viewReportBtn =
-    document.getElementById(
+document
+    .getElementById(
         "viewReportBtn"
-    );
-
-
-if (viewReportBtn) {
-
-    viewReportBtn.addEventListener(
+    )
+    .addEventListener(
         "click",
-        function() {
+        () => {
 
             window.location.href =
                 "daily-report.html";
 
         }
     );
-
-}
-
 
 
 /* =========================================================
@@ -1553,11 +1001,10 @@ setupQuantityButtons(
 );
 
 
-
 /* =========================================================
    START
 ========================================================= */
 
-displaySelectedDate();
+displayToday();
 
-loadDeliveryPage();
+loadCustomers();
