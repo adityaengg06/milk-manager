@@ -5,6 +5,7 @@
 
 (function () {
 
+
     const loggedIn =
         localStorage.getItem(
             "milkManagerLoggedIn"
@@ -17,22 +18,42 @@
             .pop();
 
 
-    /*
-       Login page does not need protection.
-    */
+    /* =========================================================
+       PUBLIC PAGES
+    ========================================================= */
+
+    const publicPages = [
+
+        "",
+        "index.html",
+        "create-account.html"
+
+    ];
+
+
+    /* =========================================================
+       LOGIN / CREATE ACCOUNT PAGE
+    ========================================================= */
 
     if (
-        currentPage === "" ||
-        currentPage === "index.html"
+        publicPages.includes(
+            currentPage
+        )
     ) {
+
 
         /*
            If already logged in,
-           go directly to dashboard.
+           don't show login/create account.
         */
 
         if (
-            loggedIn === "true"
+            loggedIn === "true" &&
+            (
+                currentPage === "" ||
+                currentPage === "index.html" ||
+                currentPage === "create-account.html"
+            )
         ) {
 
             window.location.replace(
@@ -41,14 +62,15 @@
 
         }
 
+
         return;
 
     }
 
 
-    /*
-       Every other page requires login.
-    */
+    /* =========================================================
+       PROTECTED PAGES
+    ========================================================= */
 
     if (
         loggedIn !== "true"
@@ -59,5 +81,6 @@
         );
 
     }
+
 
 })();
