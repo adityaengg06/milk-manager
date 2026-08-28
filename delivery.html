@@ -1,401 +1,661 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
+/* =========================================================
+   MILK MANAGER
+   DELIVERY PAGE
+========================================================= */
 
-    <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+/* =========================================================
+   DELIVERY DATA
+========================================================= */
 
-    <title>Milk Manager - Delivery</title>
-    
+let currentCustomerIndex = 0;
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
 
-</head>
+/* =========================================================
+   GET CUSTOMERS
+========================================================= */
 
+function getCustomers() {
 
-<body>
+    const savedCustomers =
+        localStorage.getItem("milkManagerCustomers");
 
-<div class="page-container delivery-page">
+    if (!savedCustomers) {
+        return [];
+    }
 
+    try {
 
-    <!-- HEADER -->
+        return JSON.parse(savedCustomers);
 
-    <div class="page-header">
+    } catch (error) {
 
-        <div>
+        console.error(
+            "Customer data error:",
+            error
+        );
 
-            <h1>🥛 Today's Delivery</h1>
+        return [];
 
-            <p id="deliveryDate"></p>
+    }
 
-        </div>
+}
 
-    </div>
 
+/* =========================================================
+   SAVE DELIVERY STATUS
+========================================================= */
 
-    <!-- PROGRESS -->
+function saveDeliveryStatus(
+    customerId,
+    status,
+    quantity,
+    reason = ""
+) {
 
-    <div class="delivery-progress-box">
+    let deliveries = [];
 
-        <div class="delivery-progress-top">
+    const savedDeliveries =
+        localStorage.getItem(
+            "milkManagerDeliveries"
+        );
 
-            <strong id="deliveryProgressText">
-                0 / 0
-            </strong>
 
-            <span id="deliveryPercent">
-                0%
-            </span>
+    if (savedDeliveries) {
 
-        </div>
+        try {
 
+            deliveries =
+                JSON.parse(
+                    savedDeliveries
+                );
 
-        <div class="delivery-progress">
+        } catch (error) {
 
-            <div
-                id="deliveryProgressBar"
-                class="delivery-progress-bar"
-            ></div>
+            deliveries = [];
 
-        </div>
+        }
 
-    </div>
+    }
 
 
-    <!-- CUSTOMER CARD -->
+    const today =
+        new Date()
+        .toISOString()
+        .split("T")[0];
 
-    <div
-        id="customerArea"
-        class="delivery-customer-area"
-    >
 
+    const existingIndex =
+        deliveries.findIndex(
+            function(delivery) {
 
-        <div class="delivery-customer-card">
+                return (
+                    delivery.customerId === customerId &&
+                    delivery.date === today
+                );
 
+            }
+        );
 
-            <div class="delivery-customer-header">
 
-                <div
-                    id="customerAvatar"
-                    class="delivery-avatar"
-                >
-                    RK
-                </div>
+    const deliveryData = {
 
+        customerId:
+            customerId,
 
-                <div>
+        date:
+            today,
 
-                    <h2 id="customerName">
-                        Customer Name
-                    </h2>
+        status:
+            status,
 
-                    <p id="customerPhone">
-                        📞 -
-                    </p>
+        quantity:
+            quantity,
 
-                </div>
+        reason:
+            reason,
 
-            </div>
+        updatedAt:
+            new Date().toISOString()
 
+    };
 
-            <div class="delivery-address">
 
-                📍
+    if (existingIndex !== -1) {
 
-                <span id="customerAddress">
-                    Customer Address
-                </span>
+        deliveries[existingIndex] =
+            deliveryData;
 
-            </div>
+    } else {
 
+        deliveries.push(
+            deliveryData
+        );
 
-            <!-- MILK -->
+    }
 
-            <div class="delivery-product-box">
 
-                <div>
+    localStorage.setItem(
+        "milkManagerDeliveries",
+        JSON.stringify(
+            deliveries
+        )
+    );
 
-                    <span class="delivery-product-title">
-                        🥛 Milk
-                    </span>
+}
 
-                    <small>
-                        Today's quantity
-                    </small>
 
-                </div>
+/* =========================================================
+   MARK DELIVERED
+========================================================= */
 
+function markDelivered() {
 
-                <div class="quantity-control">
+    const customers =
+        getCustomers();
 
-                    <button
-                        id="milkMinus"
-                        type="button"
-                    >
-                        −
-                    </button>
 
+    if (
+        customers.length === 0
+    ) {
 
-                    <input
-                        type="number"
-                        id="milkQuantity"
-                        min="0"
-                        step="0.5"
-                        value="0"
-                    >
+        alert(
+            "No customers available."
+        );
 
+        return;
 
-                    <span>
-                        L
-                    </span>
+    }
 
 
-                    <button
-                        id="milkPlus"
-                        type="button"
-                    >
-                        +
-                    </button>
+    const customer =
+        customers[
+            currentCustomerIndex
+        ];
 
-                </div>
 
-            </div>
+    if (!customer) {
 
+        return;
 
-            <!-- EXTRA PRODUCTS -->
+    }
 
-            <div class="delivery-extra-products">
 
-                <h3>
-                    Extra Products
-                </h3>
+    const quantityElement =
+        document.getElementById(
+            "milkQty"
+        );
 
 
-                <div class="extra-product-row">
+    let quantity = 0;
 
-                    <label>
-                        🧀 Paneer
-                    </label>
 
-                    <div class="small-quantity">
+    if (quantityElement) {
 
-                        <button
-                            type="button"
-                            id="paneerMinus"
-                        >
-                            −
-                        </button>
+        quantity =
+            Number(
+                quantityElement.textContent
+            ) || 0;
 
-                        <input
-                            type="number"
-                            id="paneerQuantity"
-                            min="0"
-                            step="0.5"
-                            value="0"
-                        >
+    }
 
-                        <span>
-                            kg
-                        </span>
 
-                        <button
-                            type="button"
-                            id="paneerPlus"
-                        >
-                            +
-                        </button>
+    const customerId =
+        customer.id ||
+        customer.mobile ||
+        customer.name;
 
-                    </div>
 
-                </div>
+    saveDeliveryStatus(
+        customerId,
+        "delivered",
+        quantity
+    );
 
 
-                <div class="extra-product-row">
+    const deliverButton =
+        document.getElementById(
+            "deliverButton"
+        );
 
-                    <label>
-                        🥣 Curd
-                    </label>
 
-                    <div class="small-quantity">
+    if (deliverButton) {
 
-                        <button
-                            type="button"
-                            id="curdMinus"
-                        >
-                            −
-                        </button>
+        deliverButton.textContent =
+            "✓ DELIVERED";
 
-                        <input
-                            type="number"
-                            id="curdQuantity"
-                            min="0"
-                            step="0.5"
-                            value="0"
-                        >
+        deliverButton.classList.add(
+            "delivered-done"
+        );
 
-                        <span>
-                            kg
-                        </span>
+        deliverButton.disabled =
+            true;
 
-                        <button
-                            type="button"
-                            id="curdPlus"
-                        >
-                            +
-                        </button>
+    }
 
-                    </div>
 
-                </div>
+    alert(
+        "Milk delivery marked as completed."
+    );
 
 
-                <div class="extra-product-row">
+    /*
+       Move to next customer
+    */
 
-                    <label>
-                        🧈 Ghee
-                    </label>
+    setTimeout(
+        function() {
 
-                    <div class="small-quantity">
+            showNextCustomer();
 
-                        <button
-                            type="button"
-                            id="gheeMinus"
-                        >
-                            −
-                        </button>
+        },
+        300
+    );
 
-                        <input
-                            type="number"
-                            id="gheeQuantity"
-                            min="0"
-                            step="0.5"
-                            value="0"
-                        >
+}
 
-                        <span>
-                            kg
-                        </span>
 
-                        <button
-                            type="button"
-                            id="gheePlus"
-                        >
-                            +
-                        </button>
+/* =========================================================
+   SKIP DELIVERY
+========================================================= */
 
-                    </div>
+function markNotDelivered() {
 
-                </div>
+    const customers =
+        getCustomers();
 
-            </div>
 
+    if (
+        customers.length === 0
+    ) {
 
-            <!-- ACTIONS -->
+        alert(
+            "No customers available."
+        );
 
-            <div class="delivery-actions">
+        return;
 
-                <button
-                    id="notDeliveredBtn"
-                    class="delivery-skip-btn"
-                    type="button"
-                >
-                    ✕ Not Delivered
-                </button>
+    }
 
 
-                <button
-                    id="deliveredBtn"
-                    class="delivery-done-btn"
-                    type="button"
-                >
-                    ✓ Mark Delivered
-                </button>
+    const customer =
+        customers[
+            currentCustomerIndex
+        ];
 
-            </div>
 
+    if (!customer) {
 
-            <!-- PREVIOUS -->
+        return;
 
-            <button
-                id="previousBtn"
-                class="delivery-previous-btn"
-                type="button"
-            >
-                ← Previous Customer
-            </button>
+    }
 
 
-        </div>
+    const reason =
+        prompt(
+            "Reason for not delivering:"
+        );
 
-    </div>
 
+    if (reason === null) {
 
-    <!-- COMPLETED -->
+        return;
 
-    <div
-        id="completionArea"
-        class="delivery-complete"
-        style="display:none;"
-    >
+    }
 
-        <div class="completion-icon">
-            🎉
-        </div>
 
-        <h2>
-            Today's Delivery Completed
-        </h2>
+    const customerId =
+        customer.id ||
+        customer.mobile ||
+        customer.name;
 
-        <p>
-            All customers have been processed.
-        </p>
 
-        <div
-            id="completionStats"
-            class="completion-stats"
-        >
-            0 / 0 Customers
-        </div>
+    saveDeliveryStatus(
+        customerId,
+        "not-delivered",
+        0,
+        reason ||
+        "Not specified"
+    );
 
 
-        <div class="completion-actions">
+    alert(
+        "Delivery skipped.\nReason: " +
+        (
+            reason ||
+            "Not specified"
+        )
+    );
 
-            <button
-                id="backToHomeBtn"
-                class="primary-btn"
-                type="button"
-            >
-                🏠 Back to Home
-            </button>
 
+    setTimeout(
+        function() {
 
-            <button
-                id="viewReportBtn"
-                class="secondary-btn"
-                type="button"
-            >
-                📊 View Report
-            </button>
+            showNextCustomer();
 
-        </div>
+        },
+        300
+    );
 
-    </div>
+}
 
 
-</div>
+/* =========================================================
+   SHOW NEXT CUSTOMER
+========================================================= */
 
+function showNextCustomer() {
 
-<script src="database.js"></script>
-<script src="delivery.js"></script>
+    const customers =
+        getCustomers();
 
-</body>
 
-</html>
+    currentCustomerIndex++;
+
+
+    if (
+        currentCustomerIndex >=
+        customers.length
+    ) {
+
+        alert(
+            "All customers have been processed for today."
+        );
+
+
+        /*
+           IMPORTANT:
+
+           We DO NOT remove:
+           milkManagerLoggedIn
+
+           We DO NOT clear localStorage.
+
+           We simply stay on the delivery page.
+        */
+
+        return;
+
+    }
+
+
+    displayCustomer(
+        customers[
+            currentCustomerIndex
+        ]
+    );
+
+}
+
+
+/* =========================================================
+   DISPLAY CUSTOMER
+========================================================= */
+
+function displayCustomer(
+    customer
+) {
+
+    if (!customer) {
+
+        return;
+
+    }
+
+
+    const nameElement =
+        document.getElementById(
+            "customerName"
+        );
+
+
+    const addressElement =
+        document.getElementById(
+            "customerAddress"
+        );
+
+
+    const phoneElement =
+        document.getElementById(
+            "customerPhone"
+        );
+
+
+    const qtyElement =
+        document.getElementById(
+            "milkQty"
+        );
+
+
+    const amountElement =
+        document.getElementById(
+            "milkAmount"
+        );
+
+
+    if (nameElement) {
+
+        nameElement.textContent =
+            customer.name ||
+            "Customer";
+
+    }
+
+
+    if (addressElement) {
+
+        addressElement.textContent =
+            customer.address ||
+            "";
+
+    }
+
+
+    if (phoneElement) {
+
+        phoneElement.textContent =
+            customer.mobile ||
+            customer.phone ||
+            "";
+
+    }
+
+
+    const milk =
+        Number(
+            customer.milk ||
+            customer.quantity ||
+            2
+        );
+
+
+    if (qtyElement) {
+
+        qtyElement.textContent =
+            milk;
+
+    }
+
+
+    if (amountElement) {
+
+        amountElement.textContent =
+            milk + " L";
+
+    }
+
+
+    /*
+       Reset buttons
+    */
+
+    const deliverButton =
+        document.getElementById(
+            "deliverButton"
+        );
+
+
+    if (deliverButton) {
+
+        deliverButton.textContent =
+            "✓ DELIVER";
+
+        deliverButton.disabled =
+            false;
+
+        deliverButton.classList.remove(
+            "delivered-done"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CHANGE MILK
+========================================================= */
+
+function changeMilk(
+    amount
+) {
+
+    const qtyElement =
+        document.getElementById(
+            "milkQty"
+        );
+
+
+    if (!qtyElement) {
+
+        return;
+
+    }
+
+
+    let quantity =
+        Number(
+            qtyElement.textContent
+        ) || 0;
+
+
+    quantity += amount;
+
+
+    if (quantity < 0) {
+
+        quantity = 0;
+
+    }
+
+
+    if (quantity > 20) {
+
+        quantity = 20;
+
+    }
+
+
+    qtyElement.textContent =
+        quantity;
+
+
+    const amountElement =
+        document.getElementById(
+            "milkAmount"
+        );
+
+
+    if (amountElement) {
+
+        amountElement.textContent =
+            quantity + " L";
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIALIZE DELIVERY PAGE
+========================================================= */
+
+function initializeDelivery() {
+
+    const customers =
+        getCustomers();
+
+
+    if (
+        customers.length === 0
+    ) {
+
+        console.log(
+            "No customers found."
+        );
+
+        return;
+
+    }
+
+
+    currentCustomerIndex = 0;
+
+
+    displayCustomer(
+        customers[0]
+    );
+
+}
+
+
+/* =========================================================
+   BUTTON CONNECTION
+========================================================= */
+
+const deliverButton =
+    document.getElementById(
+        "deliverButton"
+    );
+
+
+if (deliverButton) {
+
+    deliverButton.addEventListener(
+        "click",
+        function() {
+
+            markDelivered();
+
+        }
+    );
+
+}
+
+
+const skipButton =
+    document.getElementById(
+        "skipButton"
+    );
+
+
+if (skipButton) {
+
+    skipButton.addEventListener(
+        "click",
+        function() {
+
+            markNotDelivered();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+initializeDelivery();
