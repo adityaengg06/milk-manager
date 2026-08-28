@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#0f3d3e"
+    >
+
+    <title>Milk Manager - Login</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body class="login-page">
+
+
+<div class="login-wrapper">
+
+
+    <!-- LOGIN HEADER -->
+
+    <div class="login-brand">
+
+        <div class="login-logo">
+            🥛
+        </div>
+
+        <h1>
+            Milk Manager
+        </h1>
+
+        <p>
+            Manage your milk business easily
+        </p>
+
+    </div>
+
+
+    <!-- LOGIN CARD -->
+
+    <div class="login-card">
+
+
+        <form id="loginForm">
+
+
+            <!-- MOBILE NUMBER -->
+
+            <div class="form-group">
+
+                <label for="mobile">
+                    Mobile Number
+                </label>
+
+                <input
+                    type="tel"
+                    id="mobile"
+                    name="mobile"
+                    placeholder="Enter 10-digit mobile number"
+                    maxlength="10"
+                    inputmode="numeric"
+                    autocomplete="username"
+                    required
+                >
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+
+                <div class="password-box">
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+
+                    <button
+                        type="button"
+                        id="togglePassword"
+                        class="password-toggle"
+                    >
+                        👁️
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- LOGIN BUTTON -->
+
+            <button
+                type="submit"
+                class="login-submit"
+            >
+                LOGIN
+            </button>
+
+
+            <!-- FORGOT PASSWORD -->
+
+            <button
+                type="button"
+                id="forgotPassword"
+                class="forgot-password"
+            >
+                Forgot Password?
+            </button>
+
+
+        </form>
+
+
+    </div>
+
+
+    <div class="login-footer">
+        Milk Manager V1
+    </div>
+
+
+</div>
+
+
+<script src="app.js"></script>
+
+</body>
+
+</html>

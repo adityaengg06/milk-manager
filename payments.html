@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Payments - Milk Manager</title>
+    <script src="auth.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="page-container">
+
+    <!-- HEADER -->
+    <div class="page-header">
+
+        <div>
+            <h1>Payments</h1>
+            <p>Manage customer payments</p>
+        </div>
+
+        <button
+            class="primary-btn"
+            id="collectPaymentBtn"
+        >
+            + Collect Payment
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+    <div class="payment-summary">
+
+        <div class="payment-summary-card">
+
+            <span>Total Outstanding</span>
+
+            <strong id="totalOutstanding">
+                ₹0
+            </strong>
+
+        </div>
+
+
+        <div class="payment-summary-card">
+
+            <span>Collected Today</span>
+
+            <strong id="todayCollected">
+                ₹0
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="paymentSearch"
+            placeholder="🔍 Search customer..."
+            autocomplete="off"
+        >
+
+    </div>
+
+
+    <!-- TITLE -->
+    <div class="section-title">
+
+        <h2>Customer Payments</h2>
+
+        <span id="paymentCustomerCount">
+            0 Customers
+        </span>
+
+    </div>
+
+
+    <!-- CUSTOMER PAYMENT LIST -->
+    <div
+        id="paymentCustomerList"
+        class="payment-customer-list"
+    >
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     PAYMENT MODAL
+===================================================== -->
+
+<div
+    id="paymentModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <!-- MODAL HEADER -->
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2>Collect Payment</h2>
+
+                <p>
+                    Record customer payment
+                </p>
+
+            </div>
+
+            <button
+                type="button"
+                class="close-btn"
+                id="closePaymentModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <!-- PAYMENT FORM -->
+
+        <form id="paymentForm">
+
+            <!-- CUSTOMER -->
+
+            <div class="form-group">
+
+                <label for="paymentCustomer">
+                    Customer
+                </label>
+
+                <select
+                    id="paymentCustomer"
+                    required
+                >
+
+                    <option value="">
+                        Select customer
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- CURRENT OUTSTANDING -->
+
+            <div
+                id="customerOutstandingBox"
+                class="customer-outstanding-box"
+            >
+
+                <span>
+                    Current Outstanding
+                </span>
+
+                <strong id="customerOutstanding">
+                    ₹0
+                </strong>
+
+            </div>
+
+
+            <!-- AMOUNT -->
+
+            <div class="form-group">
+
+                <label for="paymentAmount">
+                    Payment Amount
+                </label>
+
+                <input
+                    type="number"
+                    id="paymentAmount"
+                    placeholder="Enter amount"
+                    min="1"
+                    step="1"
+                    required
+                >
+
+            </div>
+
+
+            <!-- PAYMENT MODE -->
+
+            <div class="form-group">
+
+                <label for="paymentMode">
+                    Payment Mode
+                </label>
+
+                <select
+                    id="paymentMode"
+                    required
+                >
+
+                    <option value="">
+                        Select payment mode
+                    </option>
+
+                    <option value="Cash">
+                        💵 Cash
+                    </option>
+
+                    <option value="UPI">
+                        📱 UPI
+                    </option>
+
+                    <option value="Bank">
+                        🏦 Bank Transfer
+                    </option>
+
+                    <option value="Other">
+                        💳 Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- NOTE -->
+
+            <div class="form-group">
+
+                <label for="paymentNote">
+                    Note (Optional)
+                </label>
+
+                <input
+                    type="text"
+                    id="paymentNote"
+                    placeholder="Payment note"
+                >
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    id="cancelPaymentBtn"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-btn"
+                >
+                    Save Payment
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script src="payments.js"></script>
+
+</body>
+</html>

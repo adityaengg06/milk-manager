@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Settings - Milk Manager</title>
+
+    <script src="auth.js"></script>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+<header class="simple-header">
+
+    <div>
+
+        <h1>
+            More
+        </h1>
+
+        <p>
+            Settings & management
+        </p>
+
+    </div>
+
+</header>
+
+
+<main class="main-content">
+
+
+<!-- PROFILE -->
+
+<div class="profile-card">
+
+    <div class="big-avatar">
+        MD
+    </div>
+
+    <div>
+
+        <strong>
+            Milk Distributor
+        </strong>
+
+        <small>
+            Fresh Milk Distribution
+        </small>
+
+    </div>
+
+</div>
+
+
+<!-- SETTINGS -->
+
+<div class="settings-list">
+
+
+<!-- BUSINESS -->
+
+<button
+    onclick="alert('Business profile will be added later.')"
+>
+
+    <span>
+        🏢
+    </span>
+
+    <strong>
+        Business Profile
+    </strong>
+
+    <b>›</b>
+
+</button>
+
+
+<!-- DELIVERY PERSONS -->
+
+<button
+    onclick="alert('Delivery persons will be added later.')"
+>
+
+    <span>
+        👨‍💼
+    </span>
+
+    <strong>
+        Delivery Persons
+    </strong>
+
+    <b>›</b>
+
+</button>
+
+
+<!-- RATES -->
+
+<button
+    onclick="alert('Milk rates will be added later.')"
+>
+
+    <span>
+        🥛
+    </span>
+
+    <strong>
+        Milk & Rates
+    </strong>
+
+    <b>›</b>
+
+</button>
+
+
+<!-- NOTIFICATIONS -->
+
+<button
+    onclick="alert('Notifications will be added later.')"
+>
+
+    <span>
+        🔔
+    </span>
+
+    <strong>
+        Notifications
+    </strong>
+
+    <b>›</b>
+
+</button>
+
+
+<!-- PASSWORD -->
+
+<button
+    onclick="alert('Password change will be added later.')"
+>
+
+    <span>
+        🔐
+    </span>
+
+    <strong>
+        Change Password
+    </strong>
+
+    <b>›</b>
+
+</button>
+
+
+<!-- =====================================================
+     BACKUP
+===================================================== -->
+
+<button
+    id="backupButton"
+>
+
+    <span>
+        💾
+    </span>
+
+    <div style="flex:1; text-align:left;">
+
+        <strong>
+            Backup Database
+        </strong>
+
+        <small>
+            Download customers, deliveries & payments
+        </small>
+
+    </div>
+
+    <b>›</b>
+
+</button>
+
+
+<!-- =====================================================
+     RESTORE
+===================================================== -->
+
+<button
+    id="restoreButton"
+>
+
+    <span>
+        ♻️
+    </span>
+
+    <div style="flex:1; text-align:left;">
+
+        <strong>
+            Restore Database
+        </strong>
+
+        <small>
+            Restore data from a backup file
+        </small>
+
+    </div>
+
+    <b>›</b>
+
+</button>
+
+
+<!-- HIDDEN FILE INPUT -->
+
+<input
+    type="file"
+    id="restoreFile"
+    accept=".json,application/json"
+    style="display:none;"
+>
+
+
+<!-- =====================================================
+     LOGOUT
+===================================================== -->
+
+<button
+    id="logoutButton"
+    class="logout"
+>
+
+    <span>
+        🚪
+    </span>
+
+    <strong>
+        Logout
+    </strong>
+
+    <b>›</b>
+
+</button>
+
+
+</div>
+
+
+<!-- =====================================================
+     BACKUP INFORMATION
+===================================================== -->
+
+<div
+    style="
+        margin-top:20px;
+        padding:15px;
+        border-radius:14px;
+        background:#f5f7f5;
+        font-size:13px;
+        color:#666;
+        line-height:1.5;
+    "
+>
+
+    <strong>
+        💡 Backup Tip
+    </strong>
+
+    <br>
+
+    Take a backup regularly and keep the file
+    somewhere safe. You can use it to restore
+    your customer and delivery data later.
+
+</div>
+
+
+</main>
+
+
+<!-- =====================================================
+     BOTTOM NAVIGATION
+===================================================== -->
+
+<nav class="bottom-nav">
+
+
+    <button
+        class="nav-item"
+        onclick="goTo('home.html')"
+    >
+
+        <span>
+            🏠
+        </span>
+
+        <small>
+            Home
+        </small>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        onclick="goTo('customers.html')"
+    >
+
+        <span>
+            👥
+        </span>
+
+        <small>
+            Customers
+        </small>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        onclick="goTo('reports.html')"
+    >
+
+        <span>
+            🥛
+        </span>
+
+        <small>
+            Report
+        </small>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        onclick="goTo('bills.html')"
+    >
+
+        <span>
+            🧾
+        </span>
+
+        <small>
+            Bills
+        </small>
+
+    </button>
+
+
+    <button
+        class="nav-item active"
+        onclick="goTo('settings.html')"
+    >
+
+        <span>
+            ⚙️
+        </span>
+
+        <small>
+            More
+        </small>
+
+    </button>
+
+
+</nav>
+
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script src="app.js"></script>
+
+<script src="settings.js"></script>
+
+<script src="backup.js"></script>
+
+
+</body>
+
+</html>

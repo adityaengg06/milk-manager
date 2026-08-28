@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#1677ff"
+    >
+
+    <title>Milk Manager - Home</title>
+    <script src="app.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+
+    <!-- HEADER -->
+
+    <header class="top-header">
+
+        <div>
+
+            <p id="greeting">
+                Good Morning 👋
+            </p>
+
+            <h1>
+                Milk Manager
+            </h1>
+
+            <small id="currentDate">
+                Loading date...
+            </small>
+
+        </div>
+
+
+        <button
+            class="notification-btn"
+            id="notificationBtn"
+        >
+            🔔
+            <i></i>
+        </button>
+
+    </header>
+
+
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+
+
+        <!-- BUSINESS CARD -->
+
+        <section class="business-card">
+
+            <div>
+
+                <span>
+                    YOUR BUSINESS
+                </span>
+
+                <h2>
+                    Fresh Milk Distribution
+                </h2>
+
+                <p>
+                    Keep your daily deliveries on track.
+                </p>
+
+            </div>
+
+            <div class="business-icon">
+                🥛
+            </div>
+
+        </section>
+
+
+
+        <!-- DELIVERY -->
+
+        <div class="section-heading">
+
+            <div>
+
+                <h2>
+                    Today's Delivery
+                </h2>
+
+                <p>
+                    Delivery progress
+                </p>
+
+            </div>
+
+            <strong class="percentage">
+                93%
+            </strong>
+
+        </div>
+
+
+
+        <section class="delivery-overview">
+
+            <div class="delivery-info">
+
+                <div class="delivery-number">
+
+                    <strong>
+                        76
+                    </strong>
+
+                    <span>
+                        / 82
+                    </span>
+
+                </div>
+
+                <p>
+                    customers delivered
+                </p>
+
+
+                <div class="progress-bar">
+
+                    <div
+                        style="width:93%"
+                    ></div>
+
+                </div>
+
+
+                <div class="progress-bottom">
+
+                    <span>
+                        6 customers remaining
+                    </span>
+
+                    <strong>
+                        93%
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="progress-circle">
+
+                <div>
+
+                    <strong>
+                        76
+                    </strong>
+
+                    <small>
+                        DONE
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- MINI STATS -->
+
+        <div class="mini-stats">
+
+
+            <div class="mini-stat">
+
+                <span class="stat-icon blue">
+                    👥
+                </span>
+
+                <div>
+
+                    <strong>
+                        82
+                    </strong>
+
+                    <small>
+                        Customers
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="mini-stat">
+
+                <span class="stat-icon green">
+                    🥛
+                </span>
+
+                <div>
+
+                    <strong>
+                        154 L
+                    </strong>
+
+                    <small>
+                        Delivered
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="mini-stat">
+
+                <span class="stat-icon orange">
+                    ⏳
+                </span>
+
+                <div>
+
+                    <strong>
+                        6
+                    </strong>
+
+                    <small>
+                        Remaining
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- QUICK ACTIONS -->
+
+        <div class="section-heading">
+
+            <div>
+
+                <h2>
+                    Quick Actions
+                </h2>
+
+                <p>
+                    Frequently used
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="quick-grid">
+
+
+            <button
+                class="quick-card"
+                onclick="goTo('delivery.html')"
+            >
+
+                <span class="quick-icon green">
+                    🥛
+                </span>
+
+                <div>
+
+                    <strong>
+                        Start Delivery
+                    </strong>
+
+                    <small>
+                        Deliver milk
+                    </small>
+
+                </div>
+
+                <b>→</b>
+
+            </button>
+
+
+
+            <button
+                class="quick-card"
+                onclick="goTo('customers.html')"
+            >
+
+                <span class="quick-icon blue">
+                    👥
+                </span>
+
+                <div>
+
+                    <strong>
+                        Customers
+                    </strong>
+
+                    <small>
+                        Manage customers
+                    </small>
+
+                </div>
+
+                <b>→</b>
+
+            </button>
+
+
+
+            <button
+                class="quick-card"
+                onclick="goTo('reports.html')"
+            >
+
+                <span class="quick-icon purple">
+                    📊
+                </span>
+
+                <div>
+
+                    <strong>
+                        Daily Report
+                    </strong>
+
+                    <small>
+                        Today's report
+                    </small>
+
+                </div>
+
+                <b>→</b>
+
+            </button>
+
+
+
+            <button
+                class="quick-card"
+                onclick="goTo('payments.html')"
+            >
+
+                <span class="quick-icon orange">
+                    💰
+                </span>
+
+                <div>
+
+                    <strong>
+                        Payments
+                    </strong>
+
+                    <small>
+                        Collect payments
+                    </small>
+
+                </div>
+
+                <b>→</b>
+
+            </button>
+
+        </div>
+
+
+
+        <!-- SUMMARY -->
+
+        <div class="section-heading">
+
+            <div>
+
+                <h2>
+                    Today's Summary
+                </h2>
+
+                <p>
+                    Business overview
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-grid">
+
+
+            <div class="summary-card">
+
+                <span>
+                    👥
+                </span>
+
+                <small>
+                    CUSTOMERS
+                </small>
+
+                <strong>
+                    82
+                </strong>
+
+                <p>
+                    Active customers
+                </p>
+
+            </div>
+
+
+
+            <div class="summary-card">
+
+                <span>
+                    🥛
+                </span>
+
+                <small>
+                    MILK
+                </small>
+
+                <strong>
+                    154 L
+                </strong>
+
+                <p>
+                    Delivered today
+                </p>
+
+            </div>
+
+
+
+            <div class="summary-card">
+
+                <span>
+                    💰
+                </span>
+
+                <small>
+                    COLLECTED
+                </small>
+
+                <strong>
+                    ₹8,450
+                </strong>
+
+                <p>
+                    Today's collection
+                </p>
+
+            </div>
+
+
+
+            <div class="summary-card">
+
+                <span>
+                    ⏳
+                </span>
+
+                <small>
+                    PENDING
+                </small>
+
+                <strong>
+                    ₹2,300
+                </strong>
+
+                <p>
+                    Outstanding
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ACTIVITY -->
+
+        <div class="section-heading">
+
+            <div>
+
+                <h2>
+                    Today's Activity
+                </h2>
+
+                <p>
+                    Latest updates
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="activity-card">
+
+
+            <div class="activity">
+
+                <span class="activity-icon green">
+                    ✓
+                </span>
+
+                <div>
+
+                    <strong>
+                        Delivery completed
+                    </strong>
+
+                    <small>
+                        Rajesh Kumar • 2 L
+                    </small>
+
+                </div>
+
+                <time>
+                    10:32 AM
+                </time>
+
+            </div>
+
+
+
+            <div class="activity">
+
+                <span class="activity-icon purple">
+                    ₹
+                </span>
+
+                <div>
+
+                    <strong>
+                        Payment received
+                    </strong>
+
+                    <small>
+                        Amit Sharma • ₹1,000
+                    </small>
+
+                </div>
+
+                <time>
+                    10:15 AM
+                </time>
+
+            </div>
+
+
+
+            <div class="activity">
+
+                <span class="activity-icon orange">
+                    !
+                </span>
+
+                <div>
+
+                    <strong>
+                        Delivery pending
+                    </strong>
+
+                    <small>
+                        Suresh Kumar • 2 L
+                    </small>
+
+                </div>
+
+                <time>
+                    9:48 AM
+                </time>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- BOTTOM NAV -->
+
+    <nav class="bottom-nav">
+
+        <button
+            class="nav-item active"
+            onclick="goTo('home.html')"
+        >
+            <span>🏠</span>
+            <small>Home</small>
+        </button>
+
+
+        <button
+            class="nav-item"
+            onclick="goTo('customers.html')"
+        >
+            <span>👥</span>
+            <small>Customers</small>
+        </button>
+
+
+        <button
+            class="nav-item"
+            onclick="goTo('reports.html')"
+        >
+            <span>🥛</span>
+            <small>Report</small>
+        </button>
+
+
+        <button
+            class="nav-item"
+            onclick="goTo('bills.html')"
+        >
+            <span>🧾</span>
+            <small>Bills</small>
+        </button>
+
+
+        <button
+            class="nav-item"
+            onclick="goTo('settings.html')"
+        >
+            <span>⚙️</span>
+            <small>More</small>
+        </button>
+
+    </nav>
+
+</div>
+
+
+<script src="app.js"></script>
+<script src="history.js"></script>
+</body>
+
+</html>

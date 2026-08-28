@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Milk Manager - Bills</title>
+    <script src="auth.js"></script>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="page-container">
+
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h1>🧾 Bills</h1>
+
+            <p>
+                Detailed customer billing
+            </p>
+
+        </div>
+
+        <button
+            class="primary-btn"
+            id="generateAllBillsBtn"
+        >
+            Generate Bills
+        </button>
+
+    </div>
+
+
+    <!-- MONTH -->
+
+    <div class="bill-period">
+
+        <label>
+            Billing Month
+        </label>
+
+        <input
+            type="month"
+            id="billMonth"
+        >
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="bill-summary">
+
+
+        <div class="bill-summary-card">
+
+            <span>
+                Total Milk
+            </span>
+
+            <strong id="totalMilk">
+                0 L
+            </strong>
+
+        </div>
+
+
+        <div class="bill-summary-card">
+
+            <span>
+                Milk Amount
+            </span>
+
+            <strong id="totalMilkAmount">
+                ₹0
+            </strong>
+
+        </div>
+
+
+        <div class="bill-summary-card">
+
+            <span>
+                Products
+            </span>
+
+            <strong id="totalProductsAmount">
+                ₹0
+            </strong>
+
+        </div>
+
+
+        <div class="bill-summary-card">
+
+            <span>
+                Grand Total
+            </span>
+
+            <strong id="totalGrandAmount">
+                ₹0
+            </strong>
+
+        </div>
+
+
+        <div class="bill-summary-card">
+
+            <span>
+                Paid
+            </span>
+
+            <strong id="totalPaid">
+                ₹0
+            </strong>
+
+        </div>
+
+
+        <div class="bill-summary-card">
+
+            <span>
+                Outstanding
+            </span>
+
+            <strong id="totalOutstanding">
+                ₹0
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="billSearch"
+            placeholder="🔍 Search customer..."
+        >
+
+    </div>
+
+
+    <!-- CUSTOMER BILL LIST -->
+
+    <div class="section-title">
+
+        <h2>
+            Customer Bills
+        </h2>
+
+        <span id="billCustomerCount">
+            0 Customers
+        </span>
+
+    </div>
+
+
+    <div
+        id="billList"
+        class="bill-list"
+    ></div>
+
+
+</div>
+
+
+<!-- =====================================================
+     BILL MODAL
+===================================================== -->
+
+<div
+    id="billModal"
+    class="modal"
+>
+
+    <div class="modal-content bill-modal-content">
+
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2>
+                    Customer Bill
+                </h2>
+
+                <p id="billModalSubtitle">
+                    Detailed bill
+                </p>
+
+            </div>
+
+
+            <button
+                class="close-btn"
+                id="closeBillModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            id="billDetails"
+            class="bill-details"
+        ></div>
+
+
+        <div class="form-actions">
+
+            <button
+                class="secondary-btn"
+                id="closeBillBtn"
+            >
+                Close
+            </button>
+
+            <button
+                class="primary-btn"
+                id="printBillBtn"
+            >
+                🖨️ Print Bill
+            </button>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script src="bills.js"></script>
+
+</body>
+
+</html>

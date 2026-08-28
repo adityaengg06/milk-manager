@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Milk Manager - Delivery</title>
+    <script src="auth.js"></script>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="page-container delivery-page">
+
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h1>🥛 Today's Delivery</h1>
+
+            <p id="deliveryDate"></p>
+
+        </div>
+
+    </div>
+
+
+    <!-- PROGRESS -->
+
+    <div class="delivery-progress-box">
+
+        <div class="delivery-progress-top">
+
+            <strong id="deliveryProgressText">
+                0 / 0
+            </strong>
+
+            <span id="deliveryPercent">
+                0%
+            </span>
+
+        </div>
+
+
+        <div class="delivery-progress">
+
+            <div
+                id="deliveryProgressBar"
+                class="delivery-progress-bar"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CUSTOMER CARD -->
+
+    <div
+        id="customerArea"
+        class="delivery-customer-area"
+    >
+
+
+        <div class="delivery-customer-card">
+
+
+            <div class="delivery-customer-header">
+
+                <div
+                    id="customerAvatar"
+                    class="delivery-avatar"
+                >
+                    RK
+                </div>
+
+
+                <div>
+
+                    <h2 id="customerName">
+                        Customer Name
+                    </h2>
+
+                    <p id="customerPhone">
+                        📞 -
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="delivery-address">
+
+                📍
+
+                <span id="customerAddress">
+                    Customer Address
+                </span>
+
+            </div>
+
+
+            <!-- MILK -->
+
+            <div class="delivery-product-box">
+
+                <div>
+
+                    <span class="delivery-product-title">
+                        🥛 Milk
+                    </span>
+
+                    <small>
+                        Today's quantity
+                    </small>
+
+                </div>
+
+
+                <div class="quantity-control">
+
+                    <button
+                        id="milkMinus"
+                        type="button"
+                    >
+                        −
+                    </button>
+
+
+                    <input
+                        type="number"
+                        id="milkQuantity"
+                        min="0"
+                        step="0.5"
+                        value="0"
+                    >
+
+
+                    <span>
+                        L
+                    </span>
+
+
+                    <button
+                        id="milkPlus"
+                        type="button"
+                    >
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- EXTRA PRODUCTS -->
+
+            <div class="delivery-extra-products">
+
+                <h3>
+                    Extra Products
+                </h3>
+
+
+                <div class="extra-product-row">
+
+                    <label>
+                        🧀 Paneer
+                    </label>
+
+                    <div class="small-quantity">
+
+                        <button
+                            type="button"
+                            id="paneerMinus"
+                        >
+                            −
+                        </button>
+
+                        <input
+                            type="number"
+                            id="paneerQuantity"
+                            min="0"
+                            step="0.5"
+                            value="0"
+                        >
+
+                        <span>
+                            kg
+                        </span>
+
+                        <button
+                            type="button"
+                            id="paneerPlus"
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="extra-product-row">
+
+                    <label>
+                        🥣 Curd
+                    </label>
+
+                    <div class="small-quantity">
+
+                        <button
+                            type="button"
+                            id="curdMinus"
+                        >
+                            −
+                        </button>
+
+                        <input
+                            type="number"
+                            id="curdQuantity"
+                            min="0"
+                            step="0.5"
+                            value="0"
+                        >
+
+                        <span>
+                            kg
+                        </span>
+
+                        <button
+                            type="button"
+                            id="curdPlus"
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="extra-product-row">
+
+                    <label>
+                        🧈 Ghee
+                    </label>
+
+                    <div class="small-quantity">
+
+                        <button
+                            type="button"
+                            id="gheeMinus"
+                        >
+                            −
+                        </button>
+
+                        <input
+                            type="number"
+                            id="gheeQuantity"
+                            min="0"
+                            step="0.5"
+                            value="0"
+                        >
+
+                        <span>
+                            kg
+                        </span>
+
+                        <button
+                            type="button"
+                            id="gheePlus"
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="delivery-actions">
+
+                <button
+                    id="notDeliveredBtn"
+                    class="delivery-skip-btn"
+                    type="button"
+                >
+                    ✕ Not Delivered
+                </button>
+
+
+                <button
+                    id="deliveredBtn"
+                    class="delivery-done-btn"
+                    type="button"
+                >
+                    ✓ Mark Delivered
+                </button>
+
+            </div>
+
+
+            <!-- PREVIOUS -->
+
+            <button
+                id="previousBtn"
+                class="delivery-previous-btn"
+                type="button"
+            >
+                ← Previous Customer
+            </button>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- COMPLETED -->
+
+    <div
+        id="completionArea"
+        class="delivery-complete"
+        style="display:none;"
+    >
+
+        <div class="completion-icon">
+            🎉
+        </div>
+
+        <h2>
+            Today's Delivery Completed
+        </h2>
+
+        <p>
+            All customers have been processed.
+        </p>
+
+        <div
+            id="completionStats"
+            class="completion-stats"
+        >
+            0 / 0 Customers
+        </div>
+
+
+        <div class="completion-actions">
+
+            <button
+                id="backToHomeBtn"
+                class="primary-btn"
+                type="button"
+            >
+                🏠 Back to Home
+            </button>
+
+
+            <button
+                id="viewReportBtn"
+                class="secondary-btn"
+                type="button"
+            >
+                📊 View Report
+            </button>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script src="database.js"></script>
+<script src="delivery.js"></script>
+
+</body>
+
+</html>

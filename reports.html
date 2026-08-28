@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Reports - Milk Manager</title>
+    <script src="auth.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+
+<header class="simple-header">
+
+    <div>
+
+        <h1>
+            Daily Report
+        </h1>
+
+        <p id="reportDate">
+            Today's report
+        </p>
+
+    </div>
+
+</header>
+
+
+<main class="main-content">
+
+
+<div class="report-main">
+
+    <span>
+        DELIVERY COMPLETION
+    </span>
+
+    <strong>
+        93%
+    </strong>
+
+    <p>
+        76 of 82 customers delivered
+    </p>
+
+</div>
+
+
+
+<div class="report-grid">
+
+
+<div>
+
+    <span>✅</span>
+
+    <strong>
+        76
+    </strong>
+
+    <small>
+        Delivered
+    </small>
+
+</div>
+
+
+
+<div>
+
+    <span>⏳</span>
+
+    <strong>
+        6
+    </strong>
+
+    <small>
+        Remaining
+    </small>
+
+</div>
+
+
+
+<div>
+
+    <span>🥛</span>
+
+    <strong>
+        154 L
+    </strong>
+
+    <small>
+        Milk
+    </small>
+
+</div>
+
+</div>
+
+
+
+<div class="report-list">
+
+    <div>
+        <span>
+            Total Customers
+        </span>
+
+        <strong>
+            82
+        </strong>
+    </div>
+
+
+    <div>
+        <span>
+            Delivered
+        </span>
+
+        <strong>
+            76
+        </strong>
+    </div>
+
+
+    <div>
+        <span>
+            Pending
+        </span>
+
+        <strong>
+            6
+        </strong>
+    </div>
+
+
+    <div>
+        <span>
+            Milk Delivered
+        </span>
+
+        <strong>
+            154 L
+        </strong>
+    </div>
+
+
+    <div>
+        <span>
+            Collection
+        </span>
+
+        <strong>
+            ₹8,450
+        </strong>
+    </div>
+
+</div>
+
+</main>
+
+
+<nav class="bottom-nav">
+
+    <button class="nav-item" onclick="goTo('home.html')">
+        <span>🏠</span>
+        <small>Home</small>
+    </button>
+
+    <button class="nav-item" onclick="goTo('customers.html')">
+        <span>👥</span>
+        <small>Customers</small>
+    </button>
+
+    <button class="nav-item active" onclick="goTo('reports.html')">
+        <span>🥛</span>
+        <small>Report</small>
+    </button>
+
+    <button class="nav-item" onclick="goTo('bills.html')">
+        <span>🧾</span>
+        <small>Bills</small>
+    </button>
+
+    <button class="nav-item" onclick="goTo('settings.html')">
+        <span>⚙️</span>
+        <small>More</small>
+    </button>
+
+</nav>
+
+</div>
+
+
+<script src="app.js"></script>
+<script src="reports.js"></script>
+
+</body>
+
+</html>
