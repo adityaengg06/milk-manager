@@ -1,6 +1,6 @@
 /* =========================================================
    MILK MANAGER
-   MAIN APPLICATION JAVASCRIPT
+   MAIN APP.JS
 ========================================================= */
 
 
@@ -29,11 +29,293 @@ function testButton() {
 
 
 /* =========================================================
+   CREATE ACCOUNT
+========================================================= */
+
+const createAccountForm =
+    document.getElementById(
+        "createAccountForm"
+    );
+
+
+if (createAccountForm) {
+
+    createAccountForm.addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+
+            /* -----------------------------------------
+               GET VALUES
+            ----------------------------------------- */
+
+            const name =
+                document
+                .getElementById("ownerName")
+                .value
+                .trim();
+
+
+            const businessName =
+                document
+                .getElementById("businessName")
+                .value
+                .trim();
+
+
+            const mobile =
+                document
+                .getElementById("accountMobile")
+                .value
+                .trim();
+
+
+            const password =
+                document
+                .getElementById("accountPassword")
+                .value;
+
+
+            const confirmPassword =
+                document
+                .getElementById("confirmPassword")
+                .value;
+
+
+            /* -----------------------------------------
+               NAME VALIDATION
+            ----------------------------------------- */
+
+            if (name.length < 2) {
+
+                alert(
+                    "Please enter your name."
+                );
+
+                return;
+
+            }
+
+
+            /* -----------------------------------------
+               BUSINESS VALIDATION
+            ----------------------------------------- */
+
+            if (businessName.length < 2) {
+
+                alert(
+                    "Please enter your business name."
+                );
+
+                return;
+
+            }
+
+
+            /* -----------------------------------------
+               MOBILE VALIDATION
+            ----------------------------------------- */
+
+            if (
+                !/^[0-9]{10}$/.test(
+                    mobile
+                )
+            ) {
+
+                alert(
+                    "Please enter a valid 10-digit mobile number."
+                );
+
+                return;
+
+            }
+
+
+            /* -----------------------------------------
+               PASSWORD VALIDATION
+            ----------------------------------------- */
+
+            if (
+                password.length < 6
+            ) {
+
+                alert(
+                    "Password must contain at least 6 characters."
+                );
+
+                return;
+
+            }
+
+
+            /* -----------------------------------------
+               CONFIRM PASSWORD
+            ----------------------------------------- */
+
+            if (
+                password !==
+                confirmPassword
+            ) {
+
+                alert(
+                    "Passwords do not match."
+                );
+
+                return;
+
+            }
+
+
+            /* -----------------------------------------
+               CHECK EXISTING ACCOUNT
+            ----------------------------------------- */
+
+            const existingAccount =
+                localStorage.getItem(
+                    "milkManagerAccount"
+                );
+
+
+            if (existingAccount) {
+
+                let oldAccount;
+
+
+                try {
+
+                    oldAccount =
+                        JSON.parse(
+                            existingAccount
+                        );
+
+                }
+
+                catch (error) {
+
+                    oldAccount = null;
+
+                }
+
+
+                if (
+                    oldAccount &&
+                    oldAccount.mobile === mobile
+                ) {
+
+                    alert(
+                        "An account with this mobile number already exists."
+                    );
+
+                    return;
+
+                }
+
+
+                alert(
+                    "An account already exists on this device. Please login."
+                );
+
+                return;
+
+            }
+
+
+            /* -----------------------------------------
+               CREATE ACCOUNT OBJECT
+            ----------------------------------------- */
+
+            const newAccount = {
+
+                name:
+                    name,
+
+                businessName:
+                    businessName,
+
+                mobile:
+                    mobile,
+
+                password:
+                    password,
+
+                createdAt:
+                    new Date().toISOString()
+
+            };
+
+
+            /* -----------------------------------------
+               SAVE ACCOUNT
+            ----------------------------------------- */
+
+            try {
+
+                localStorage.setItem(
+                    "milkManagerAccount",
+                    JSON.stringify(
+                        newAccount
+                    )
+                );
+
+            }
+
+            catch (error) {
+
+                alert(
+                    "Unable to save account on this browser."
+                );
+
+                console.error(
+                    error
+                );
+
+                return;
+
+            }
+
+
+            /* -----------------------------------------
+               SUCCESS
+            ----------------------------------------- */
+
+            alert(
+                "Account created successfully!"
+            );
+
+
+            /* Make sure user is logged out */
+
+            localStorage.removeItem(
+                "milkManagerLoggedIn"
+            );
+
+
+            localStorage.removeItem(
+                "milkManagerUser"
+            );
+
+
+            /* Go to login */
+
+            window.location.href =
+                "index.html";
+
+        }
+    );
+
+}
+
+
+/* =========================================================
    LOGIN
 ========================================================= */
 
 const loginForm =
-    document.getElementById("loginForm");
+    document.getElementById(
+        "loginForm"
+    );
 
 
 if (loginForm) {
@@ -55,15 +337,18 @@ if (loginForm) {
             const password =
                 document
                 .getElementById("password")
-                .value
-                .trim();
+                .value;
 
 
             /* -----------------------------------------
-               VALIDATE MOBILE
+               MOBILE VALIDATION
             ----------------------------------------- */
 
-            if (!/^[0-9]{10}$/.test(mobile)) {
+            if (
+                !/^[0-9]{10}$/.test(
+                    mobile
+                )
+            ) {
 
                 alert(
                     "Please enter a valid 10-digit mobile number."
@@ -75,10 +360,12 @@ if (loginForm) {
 
 
             /* -----------------------------------------
-               VALIDATE PASSWORD
+               PASSWORD VALIDATION
             ----------------------------------------- */
 
-            if (password.length === 0) {
+            if (
+                password.length === 0
+            ) {
 
                 alert(
                     "Please enter your password."
@@ -90,7 +377,7 @@ if (loginForm) {
 
 
             /* -----------------------------------------
-               GET CREATED ACCOUNT
+               GET ACCOUNT
             ----------------------------------------- */
 
             const savedAccount =
@@ -116,14 +403,16 @@ if (loginForm) {
             try {
 
                 account =
-                    JSON.parse(savedAccount);
+                    JSON.parse(
+                        savedAccount
+                    );
 
             }
 
             catch (error) {
 
                 alert(
-                    "Account data is corrupted. Please create the account again."
+                    "Account data is invalid."
                 );
 
                 return;
@@ -132,7 +421,7 @@ if (loginForm) {
 
 
             /* -----------------------------------------
-               CHECK LOGIN DETAILS
+               CHECK DETAILS
             ----------------------------------------- */
 
             if (
@@ -165,6 +454,9 @@ if (loginForm) {
 
                     name:
                         account.name,
+
+                    businessName:
+                        account.businessName,
 
                     mobile:
                         account.mobile,
@@ -215,7 +507,8 @@ if (togglePassword) {
 
 
             if (
-                password.type === "password"
+                password.type ===
+                "password"
             ) {
 
                 password.type =
@@ -256,10 +549,12 @@ if (forgotPassword) {
 
     forgotPassword.addEventListener(
         "click",
-        function() {
+        function(event) {
+
+            event.preventDefault();
 
             alert(
-                "Password recovery will be connected to the backend."
+                "Password recovery will be added with the backend."
             );
 
         }
@@ -339,23 +634,24 @@ function updateDate() {
         new Date();
 
 
-    const options = {
-
-        weekday: "long",
-
-        day: "numeric",
-
-        month: "long",
-
-        year: "numeric"
-
-    };
-
-
     dateElement.textContent =
         now.toLocaleDateString(
             "en-IN",
-            options
+            {
+
+                weekday:
+                    "long",
+
+                day:
+                    "numeric",
+
+                month:
+                    "long",
+
+                year:
+                    "numeric"
+
+            }
         );
 
 }
@@ -435,283 +731,19 @@ if (reportDate) {
             "en-IN",
             {
 
-                weekday: "long",
+                weekday:
+                    "long",
 
-                day: "numeric",
+                day:
+                    "numeric",
 
-                month: "long",
+                month:
+                    "long",
 
-                year: "numeric"
+                year:
+                    "numeric"
 
             }
         );
-
-}
-
-
-/* =========================================================
-   CUSTOMER SEARCH
-========================================================= */
-
-const customerSearch =
-    document.getElementById(
-        "customerSearch"
-    );
-
-
-if (customerSearch) {
-
-    customerSearch.addEventListener(
-        "input",
-        function() {
-
-            const search =
-                customerSearch
-                .value
-                .toLowerCase()
-                .trim();
-
-
-            const cards =
-                document.querySelectorAll(
-                    ".customer-card"
-                );
-
-
-            cards.forEach(
-                function(card) {
-
-                    const nameElement =
-                        card.querySelector(
-                            ".customer-info strong"
-                        );
-
-
-                    const addressElement =
-                        card.querySelector(
-                            ".customer-info small"
-                        );
-
-
-                    const name =
-                        nameElement
-                        ? nameElement.textContent.toLowerCase()
-                        : "";
-
-
-                    const address =
-                        addressElement
-                        ? addressElement.textContent.toLowerCase()
-                        : "";
-
-
-                    if (
-                        name.includes(search) ||
-                        address.includes(search)
-                    ) {
-
-                        card.style.display =
-                            "flex";
-
-                    }
-
-                    else {
-
-                        card.style.display =
-                            "none";
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   MILK QUANTITY
-========================================================= */
-
-let milkQuantity = 2;
-
-
-function changeMilk(amount) {
-
-    milkQuantity += amount;
-
-
-    if (milkQuantity < 0) {
-
-        milkQuantity = 0;
-
-    }
-
-
-    if (milkQuantity > 20) {
-
-        milkQuantity = 20;
-
-    }
-
-
-    const qty =
-        document.getElementById(
-            "milkQty"
-        );
-
-
-    const amountElement =
-        document.getElementById(
-            "milkAmount"
-        );
-
-
-    if (qty) {
-
-        qty.textContent =
-            milkQuantity;
-
-    }
-
-
-    if (amountElement) {
-
-        amountElement.textContent =
-            milkQuantity + " L";
-
-    }
-
-}
-
-
-/* =========================================================
-   MARK DELIVERED
-========================================================= */
-
-const deliverButton =
-    document.getElementById(
-        "deliverButton"
-    );
-
-
-if (deliverButton) {
-
-    deliverButton.addEventListener(
-        "click",
-        function() {
-
-            deliverButton.textContent =
-                "✓ DELIVERED";
-
-
-            deliverButton.classList.add(
-                "delivered-done"
-            );
-
-
-            alert(
-                "Milk delivery marked as completed."
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   NOT DELIVERED
-========================================================= */
-
-const skipButton =
-    document.getElementById(
-        "skipButton"
-    );
-
-
-if (skipButton) {
-
-    skipButton.addEventListener(
-        "click",
-        function() {
-
-            const reason =
-                prompt(
-                    "Reason for not delivering:"
-                );
-
-
-            if (reason === null) {
-
-                return;
-
-            }
-
-
-            alert(
-                "Delivery skipped.\nReason: " +
-                (
-                    reason ||
-                    "Not specified"
-                )
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   NOTIFICATION
-========================================================= */
-
-const notificationBtn =
-    document.getElementById(
-        "notificationBtn"
-    );
-
-
-if (notificationBtn) {
-
-    notificationBtn.addEventListener(
-        "click",
-        function() {
-
-            alert(
-                "You have 6 pending deliveries today."
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   ADD CUSTOMER
-========================================================= */
-
-const addButton =
-    document.querySelector(
-        ".add-btn"
-    );
-
-
-if (addButton) {
-
-    addButton.addEventListener(
-        "click",
-        function() {
-
-            alert(
-                "Add Customer form will be connected in the next version."
-            );
-
-        }
-    );
 
 }
