@@ -10,150 +10,126 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Daily Delivery - Milk Manager</title>
-
-    <!-- AUTHENTICATION -->
+    <title>Milk Manager - Delivery</title>
     <script src="auth.js"></script>
 
-    <!-- MAIN CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
 </head>
 
 
 <body>
 
-<div class="app">
+<div class="page-container delivery-page">
 
 
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
+    <!-- HEADER -->
 
-    <header class="simple-header">
+    <div class="page-header">
 
         <div>
 
-            <h1>
-                Daily Delivery
-            </h1>
+            <h1>🥛 Today's Delivery</h1>
 
-            <p id="deliveryDate">
-                Loading date...
-            </p>
+            <p id="deliveryDate"></p>
 
         </div>
 
-    </header>
+    </div>
 
 
+    <!-- PROGRESS -->
 
-    <!-- =====================================================
-         MAIN CONTENT
-    ====================================================== -->
+    <div class="delivery-progress-box">
 
-    <main class="main-content">
+        <div class="delivery-progress-top">
+
+            <strong id="deliveryProgressText">
+                0 / 0
+            </strong>
+
+            <span id="deliveryPercent">
+                0%
+            </span>
+
+        </div>
 
 
-        <!-- =================================================
-             PROGRESS
-        ================================================== -->
+        <div class="delivery-progress">
 
-        <section class="delivery-progress-card">
+            <div
+                id="deliveryProgressBar"
+                class="delivery-progress-bar"
+            ></div>
 
-            <div class="delivery-progress-top">
+        </div>
 
-                <strong>
-                    Today's Delivery
-                </strong>
+    </div>
 
-                <span id="deliveryPercent">
-                    0%
+
+    <!-- CUSTOMER CARD -->
+
+    <div
+        id="customerArea"
+        class="delivery-customer-area"
+    >
+
+
+        <div class="delivery-customer-card">
+
+
+            <div class="delivery-customer-header">
+
+                <div
+                    id="customerAvatar"
+                    class="delivery-avatar"
+                >
+                    RK
+                </div>
+
+
+                <div>
+
+                    <h2 id="customerName">
+                        Customer Name
+                    </h2>
+
+                    <p id="customerPhone">
+                        📞 -
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="delivery-address">
+
+                📍
+
+                <span id="customerAddress">
+                    Customer Address
                 </span>
 
             </div>
 
 
-            <div class="delivery-progress-bar">
+            <!-- MILK -->
 
-                <div
-                    id="deliveryProgressBar"
-                    class="delivery-progress-fill"
-                    style="width: 0%;"
-                ></div>
+            <div class="delivery-product-box">
 
-            </div>
+                <div>
 
-
-            <p id="deliveryProgressText">
-                0 / 0 Completed
-            </p>
-
-        </section>
-
-
-
-        <!-- =================================================
-             CUSTOMER AREA
-        ================================================== -->
-
-        <section id="customerArea">
-
-
-            <!-- CUSTOMER CARD -->
-
-            <div class="customer-card delivery-customer-card">
-
-
-                <div class="customer-avatar">
-
-                    <div
-                        id="customerAvatar"
-                        class="big-avatar"
-                    >
-                        C
-                    </div>
-
-                </div>
-
-
-                <div class="customer-info">
-
-                    <strong id="customerName">
-                        Customer
-                    </strong>
-
-
-                    <small id="customerPhone">
-                        📞 -
-                    </small>
-
-
-                    <small id="customerAddress">
-                        Address not available
-                    </small>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 MILK
-            ================================================== -->
-
-            <div class="delivery-product-card">
-
-                <div class="product-title">
-
-                    <span>
-                        🥛
+                    <span class="delivery-product-title">
+                        🥛 Milk
                     </span>
 
-                    <strong>
-                        Milk
-                    </strong>
+                    <small>
+                        Today's quantity
+                    </small>
 
                 </div>
 
@@ -161,8 +137,8 @@
                 <div class="quantity-control">
 
                     <button
-                        type="button"
                         id="milkMinus"
+                        type="button"
                     >
                         −
                     </button>
@@ -171,9 +147,9 @@
                     <input
                         type="number"
                         id="milkQuantity"
-                        value="0"
                         min="0"
                         step="0.5"
+                        value="0"
                     >
 
 
@@ -183,8 +159,8 @@
 
 
                     <button
-                        type="button"
                         id="milkPlus"
+                        type="button"
                     >
                         +
                     </button>
@@ -194,392 +170,231 @@
             </div>
 
 
+            <!-- EXTRA PRODUCTS -->
 
-            <!-- =================================================
-                 PANEER
-            ================================================== -->
+            <div class="delivery-extra-products">
 
-            <div class="delivery-product-card">
-
-                <div class="product-title">
-
-                    <span>
-                        🧀
-                    </span>
-
-                    <strong>
-                        Paneer
-                    </strong>
-
-                </div>
+                <h3>
+                    Extra Products
+                </h3>
 
 
-                <div class="quantity-control">
+                <div class="extra-product-row">
 
-                    <button
-                        type="button"
-                        id="paneerMinus"
-                    >
-                        −
-                    </button>
+                    <label>
+                        🧀 Paneer
+                    </label>
 
+                    <div class="small-quantity">
 
-                    <input
-                        type="number"
-                        id="paneerQuantity"
-                        value="0"
-                        min="0"
-                        step="0.5"
-                    >
+                        <button
+                            type="button"
+                            id="paneerMinus"
+                        >
+                            −
+                        </button>
 
+                        <input
+                            type="number"
+                            id="paneerQuantity"
+                            min="0"
+                            step="0.5"
+                            value="0"
+                        >
 
-                    <span>
-                        kg
-                    </span>
+                        <span>
+                            kg
+                        </span>
 
+                        <button
+                            type="button"
+                            id="paneerPlus"
+                        >
+                            +
+                        </button>
 
-                    <button
-                        type="button"
-                        id="paneerPlus"
-                    >
-                        +
-                    </button>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 CURD
-            ================================================== -->
-
-            <div class="delivery-product-card">
-
-                <div class="product-title">
-
-                    <span>
-                        🥣
-                    </span>
-
-                    <strong>
-                        Curd
-                    </strong>
+                    </div>
 
                 </div>
 
 
-                <div class="quantity-control">
+                <div class="extra-product-row">
 
-                    <button
-                        type="button"
-                        id="curdMinus"
-                    >
-                        −
-                    </button>
+                    <label>
+                        🥣 Curd
+                    </label>
 
+                    <div class="small-quantity">
 
-                    <input
-                        type="number"
-                        id="curdQuantity"
-                        value="0"
-                        min="0"
-                        step="0.5"
-                    >
+                        <button
+                            type="button"
+                            id="curdMinus"
+                        >
+                            −
+                        </button>
 
+                        <input
+                            type="number"
+                            id="curdQuantity"
+                            min="0"
+                            step="0.5"
+                            value="0"
+                        >
 
-                    <span>
-                        kg
-                    </span>
+                        <span>
+                            kg
+                        </span>
 
+                        <button
+                            type="button"
+                            id="curdPlus"
+                        >
+                            +
+                        </button>
 
-                    <button
-                        type="button"
-                        id="curdPlus"
-                    >
-                        +
-                    </button>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 GHEE
-            ================================================== -->
-
-            <div class="delivery-product-card">
-
-                <div class="product-title">
-
-                    <span>
-                        🫙
-                    </span>
-
-                    <strong>
-                        Ghee
-                    </strong>
+                    </div>
 
                 </div>
 
 
-                <div class="quantity-control">
+                <div class="extra-product-row">
 
-                    <button
-                        type="button"
-                        id="gheeMinus"
-                    >
-                        −
-                    </button>
+                    <label>
+                        🧈 Ghee
+                    </label>
 
+                    <div class="small-quantity">
 
-                    <input
-                        type="number"
-                        id="gheeQuantity"
-                        value="0"
-                        min="0"
-                        step="0.5"
-                    >
+                        <button
+                            type="button"
+                            id="gheeMinus"
+                        >
+                            −
+                        </button>
 
+                        <input
+                            type="number"
+                            id="gheeQuantity"
+                            min="0"
+                            step="0.5"
+                            value="0"
+                        >
 
-                    <span>
-                        kg
-                    </span>
+                        <span>
+                            kg
+                        </span>
 
+                        <button
+                            type="button"
+                            id="gheePlus"
+                        >
+                            +
+                        </button>
 
-                    <button
-                        type="button"
-                        id="gheePlus"
-                    >
-                        +
-                    </button>
+                    </div>
 
                 </div>
 
             </div>
 
 
-
-            <!-- =================================================
-                 ACTION BUTTONS
-            ================================================== -->
+            <!-- ACTIONS -->
 
             <div class="delivery-actions">
 
-
                 <button
-                    type="button"
-                    id="deliveredBtn"
-                    class="primary-btn"
-                >
-                    ✓ Delivered
-                </button>
-
-
-                <button
-                    type="button"
                     id="notDeliveredBtn"
-                    class="secondary-btn"
+                    class="delivery-skip-btn"
+                    type="button"
                 >
                     ✕ Not Delivered
                 </button>
 
 
+                <button
+                    id="deliveredBtn"
+                    class="delivery-done-btn"
+                    type="button"
+                >
+                    ✓ Mark Delivered
+                </button>
+
             </div>
 
 
-
-            <!-- =================================================
-                 PREVIOUS
-            ================================================== -->
+            <!-- PREVIOUS -->
 
             <button
-                type="button"
                 id="previousBtn"
-                class="back-btn"
+                class="delivery-previous-btn"
+                type="button"
             >
                 ← Previous Customer
             </button>
 
 
-        </section>
+        </div>
+
+    </div>
 
 
+    <!-- COMPLETED -->
 
-        <!-- =====================================================
-             COMPLETION AREA
-        ====================================================== -->
+    <div
+        id="completionArea"
+        class="delivery-complete"
+        style="display:none;"
+    >
 
-        <section
-            id="completionArea"
-            style="display: none;"
+        <div class="completion-icon">
+            🎉
+        </div>
+
+        <h2>
+            Today's Delivery Completed
+        </h2>
+
+        <p>
+            All customers have been processed.
+        </p>
+
+        <div
+            id="completionStats"
+            class="completion-stats"
         >
-
-            <div class="completion-card">
-
-                <div class="completion-icon">
-                    ✓
-                </div>
+            0 / 0 Customers
+        </div>
 
 
-                <h2>
-                    Today's Delivery Complete
-                </h2>
+        <div class="completion-actions">
+
+            <button
+                id="backToHomeBtn"
+                class="primary-btn"
+                type="button"
+            >
+                🏠 Back to Home
+            </button>
 
 
-                <p>
-                    All customers have been processed.
-                </p>
+            <button
+                id="viewReportBtn"
+                class="secondary-btn"
+                type="button"
+            >
+                📊 View Report
+            </button>
 
+        </div>
 
-                <div id="completionStats">
-
-                    0 / 0 Completed
-
-                </div>
-
-
-                <div class="completion-actions">
-
-                    <button
-                        type="button"
-                        id="viewReportBtn"
-                        class="primary-btn"
-                    >
-                        📊 View Daily Report
-                    </button>
-
-
-                    <button
-                        type="button"
-                        id="backToHomeBtn"
-                        class="secondary-btn"
-                    >
-                        ← Back to Home
-                    </button>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-    </main>
-
-
-
-    <!-- =====================================================
-         BOTTOM NAVIGATION
-    ====================================================== -->
-
-    <nav class="bottom-nav">
-
-
-        <button
-            class="nav-item"
-            type="button"
-            onclick="goTo('home.html')"
-        >
-
-            <span>
-                🏠
-            </span>
-
-            <small>
-                Home
-            </small>
-
-        </button>
-
-
-        <button
-            class="nav-item"
-            type="button"
-            onclick="goTo('customers.html')"
-        >
-
-            <span>
-                👥
-            </span>
-
-            <small>
-                Customers
-            </small>
-
-        </button>
-
-
-        <button
-            class="nav-item"
-            type="button"
-            onclick="goTo('reports.html')"
-        >
-
-            <span>
-                🥛
-            </span>
-
-            <small>
-                Report
-            </small>
-
-        </button>
-
-
-        <button
-            class="nav-item"
-            type="button"
-            onclick="goTo('bills.html')"
-        >
-
-            <span>
-                🧾
-            </span>
-
-            <small>
-                Bills
-            </small>
-
-        </button>
-
-
-        <button
-            class="nav-item"
-            type="button"
-            onclick="goTo('settings.html')"
-        >
-
-            <span>
-                ⚙️
-            </span>
-
-            <small>
-                More
-            </small>
-
-        </button>
-
-
-    </nav>
+    </div>
 
 
 </div>
 
 
-<!-- =========================================================
-     JAVASCRIPT
-========================================================= -->
-
-<script src="app.js"></script>
-
 <script src="database.js"></script>
-
 <script src="delivery.js"></script>
-
 
 </body>
 
