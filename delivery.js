@@ -1,6 +1,6 @@
 /* =========================================================
    MILK MANAGER
-   DAILY DELIVERY SYSTEM
+   DELIVERY SYSTEM
    DATE SELECTABLE
 ========================================================= */
 
@@ -15,12 +15,12 @@ let currentIndex = 0;
 
 
 /*
-   Selected delivery date.
-
+   The date currently being worked on.
    Default = today's date.
 */
 
 let selectedDate = getTodayDate();
+
 
 
 /* =========================================================
@@ -32,75 +32,90 @@ const customerArea =
         "customerArea"
     );
 
+
 const completionArea =
     document.getElementById(
         "completionArea"
     );
+
 
 const customerName =
     document.getElementById(
         "customerName"
     );
 
+
 const customerPhone =
     document.getElementById(
         "customerPhone"
     );
+
 
 const customerAddress =
     document.getElementById(
         "customerAddress"
     );
 
+
 const customerAvatar =
     document.getElementById(
         "customerAvatar"
     );
+
 
 const milkQuantity =
     document.getElementById(
         "milkQuantity"
     );
 
+
 const paneerQuantity =
     document.getElementById(
         "paneerQuantity"
     );
+
 
 const curdQuantity =
     document.getElementById(
         "curdQuantity"
     );
 
+
 const gheeQuantity =
     document.getElementById(
         "gheeQuantity"
     );
+
 
 const deliveryProgressText =
     document.getElementById(
         "deliveryProgressText"
     );
 
+
 const deliveryPercent =
     document.getElementById(
         "deliveryPercent"
     );
+
 
 const deliveryProgressBar =
     document.getElementById(
         "deliveryProgressBar"
     );
 
+
 const deliveryDatePicker =
     document.getElementById(
         "deliveryDatePicker"
     );
 
+
 const deliveryDateText =
     document.getElementById(
         "deliveryDateText"
     );
+
 
 const todayBtn =
     document.getElementById(
@@ -108,47 +123,76 @@ const todayBtn =
     );
 
 
+
 /* =========================================================
-   GET TODAY DATE
+   TODAY DATE
 ========================================================= */
 
 function getTodayDate() {
 
-    const d =
+    const date =
         new Date();
 
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
     return (
-        d.getFullYear() +
+        year +
         "-" +
-        String(
-            d.getMonth() + 1
-        ).padStart(2, "0") +
+        month +
         "-" +
-        String(
-            d.getDate()
-        ).padStart(2, "0")
+        day
     );
 
 }
 
 
+
 /* =========================================================
-   DISPLAY SELECTED DATE
+   FORMAT DATE
 ========================================================= */
 
-function displaySelectedDate() {
+function formatDate(
+    dateString
+) {
 
-    if (!deliveryDateText) {
-        return;
+    if (!dateString) {
+
+        return "";
+
     }
 
 
     const parts =
-        selectedDate.split("-");
+        dateString.split("-");
 
 
-    if (parts.length !== 3) {
-        return;
+    if (
+        parts.length !== 3
+    ) {
+
+        return dateString;
+
     }
 
 
@@ -160,16 +204,38 @@ function displaySelectedDate() {
         );
 
 
-    deliveryDateText.textContent =
-        date.toLocaleDateString(
-            "en-IN",
-            {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            }
+    return date.toLocaleDateString(
+        "en-IN",
+        {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   DISPLAY SELECTED DATE
+========================================================= */
+
+function displaySelectedDate() {
+
+    const formatted =
+        formatDate(
+            selectedDate
         );
+
+
+    if (deliveryDateText) {
+
+        deliveryDateText.textContent =
+            formatted;
+
+    }
 
 
     const completionDateText =
@@ -181,22 +247,56 @@ function displaySelectedDate() {
     if (completionDateText) {
 
         completionDateText.textContent =
-            `All customers have been processed for ${date.toLocaleDateString(
-                "en-IN",
-                {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric"
-                }
-            )}.`;
+            `All customers have been processed for ${formatted}.`;
 
     }
 
 }
 
 
+
 /* =========================================================
-   GET SELECTED DATE RECORD
+   GET CUSTOMERS
+========================================================= */
+
+function loadCustomerData() {
+
+    try {
+
+        customers =
+            getCustomers();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Unable to load customers:",
+            error
+        );
+
+        customers = [];
+
+    }
+
+
+    if (
+        !Array.isArray(
+            customers
+        )
+    ) {
+
+        customers = [];
+
+    }
+
+}
+
+
+
+/* =========================================================
+   GET DELIVERY RECORD
+   FOR SELECTED DATE
 ========================================================= */
 
 function getSelectedDateRecord(
@@ -219,26 +319,38 @@ function getSelectedDateRecord(
     }
 
 
-    return db.deliveries.find(
-        delivery =>
+    const record =
+        db.deliveries.find(
+            function(delivery) {
 
-            String(
-                delivery.customerId
-            ) ===
-            String(customerId)
+                return (
 
-            &&
+                    String(
+                        delivery.customerId
+                    ) ===
+                    String(
+                        customerId
+                    )
 
-            delivery.date ===
-            selectedDate
+                    &&
 
-    ) || null;
+                    delivery.date ===
+                    selectedDate
+
+                );
+
+            }
+        );
+
+
+    return record || null;
 
 }
 
 
+
 /* =========================================================
-   CHECK CUSTOMER COMPLETED
+   CHECK COMPLETED
 ========================================================= */
 
 function isCustomerCompleted(
@@ -254,60 +366,97 @@ function isCustomerCompleted(
 }
 
 
+
 /* =========================================================
-   LOAD CUSTOMERS
+   UPDATE PROGRESS
 ========================================================= */
 
-function loadCustomers() {
+function updateProgress() {
 
-    customers =
-        getCustomers();
+    const total =
+        customers.length;
 
 
-    if (
-        !Array.isArray(customers)
-    ) {
+    let completed = 0;
 
-        customers = [];
+
+    customers.forEach(
+        function(customer) {
+
+            if (
+                isCustomerCompleted(
+                    customer.id
+                )
+            ) {
+
+                completed++;
+
+            }
+
+        }
+    );
+
+
+    let percent = 0;
+
+
+    if (total > 0) {
+
+        percent =
+            Math.round(
+                (
+                    completed /
+                    total
+                ) * 100
+            );
 
     }
+
+
+    if (deliveryProgressText) {
+
+        deliveryProgressText.textContent =
+            `${completed} / ${total} Completed`;
+
+    }
+
+
+    if (deliveryPercent) {
+
+        deliveryPercent.textContent =
+            `${percent}%`;
+
+    }
+
+
+    if (deliveryProgressBar) {
+
+        deliveryProgressBar.style.width =
+            percent + "%";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   LOAD DELIVERY PAGE
+========================================================= */
+
+function loadDeliveryPage() {
+
+    loadCustomerData();
+
+
+    currentIndex = 0;
 
 
     if (
         customers.length === 0
     ) {
 
-        if (customerArea) {
-
-            customerArea.style.display =
-                "none";
-
-        }
-
-
-        if (completionArea) {
-
-            completionArea.style.display =
-                "block";
-
-        }
-
-
-        const stats =
-            document.getElementById(
-                "completionStats"
-            );
-
-
-        if (stats) {
-
-            stats.textContent =
-                "No customers available.";
-
-        }
-
-
-        updateProgress();
+        showNoCustomers();
 
         return;
 
@@ -315,40 +464,84 @@ function loadCustomers() {
 
 
     /*
-       Find first pending customer
-       for SELECTED DATE.
+       Find first customer who has
+       NOT been processed for the
+       selected date.
     */
 
-    const firstPending =
+    const pendingIndex =
         customers.findIndex(
-            customer =>
-                !isCustomerCompleted(
+            function(customer) {
+
+                return !isCustomerCompleted(
                     customer.id
-                )
+                );
+
+            }
         );
 
 
     if (
-        firstPending !== -1
+        pendingIndex === -1
     ) {
-
-        currentIndex =
-            firstPending;
-
-        renderCustomer();
-
-    }
-
-    else {
 
         currentIndex =
             customers.length;
 
         showCompletion();
 
+        return;
+
+    }
+
+
+    currentIndex =
+        pendingIndex;
+
+
+    renderCustomer();
+
+}
+
+
+
+/* =========================================================
+   SHOW NO CUSTOMERS
+========================================================= */
+
+function showNoCustomers() {
+
+    if (customerArea) {
+
+        customerArea.style.display =
+            "none";
+
+    }
+
+
+    if (completionArea) {
+
+        completionArea.style.display =
+            "block";
+
+    }
+
+
+    const stats =
+        document.getElementById(
+            "completionStats"
+        );
+
+
+    if (stats) {
+
+        stats.textContent =
+            "No customers available.";
+
     }
 
 }
+
 
 
 /* =========================================================
@@ -358,7 +551,15 @@ function loadCustomers() {
 function renderCustomer() {
 
     if (
-        currentIndex < 0 ||
+        currentIndex < 0
+    ) {
+
+        currentIndex = 0;
+
+    }
+
+
+    if (
         currentIndex >=
         customers.length
     ) {
@@ -392,7 +593,9 @@ function renderCustomer() {
         ];
 
 
-    /* NAME */
+    /*
+       NAME
+    */
 
     if (customerName) {
 
@@ -403,7 +606,9 @@ function renderCustomer() {
     }
 
 
-    /* PHONE */
+    /*
+       PHONE
+    */
 
     if (customerPhone) {
 
@@ -418,7 +623,9 @@ function renderCustomer() {
     }
 
 
-    /* ADDRESS */
+    /*
+       ADDRESS
+    */
 
     if (customerAddress) {
 
@@ -429,7 +636,9 @@ function renderCustomer() {
     }
 
 
-    /* AVATAR */
+    /*
+       AVATAR
+    */
 
     if (customerAvatar) {
 
@@ -443,11 +652,17 @@ function renderCustomer() {
                 .split(" ")
                 .filter(Boolean)
                 .map(
-                    word =>
-                        word[0]
+                    function(word) {
+
+                        return word[0];
+
+                    }
                 )
                 .join("")
-                .substring(0, 2)
+                .substring(
+                    0,
+                    2
+                )
                 .toUpperCase();
 
 
@@ -459,7 +674,8 @@ function renderCustomer() {
 
 
     /*
-       GET RECORD FOR SELECTED DATE
+       LOAD SAVED RECORD
+       FOR SELECTED DATE
     */
 
     const saved =
@@ -506,16 +722,19 @@ function renderCustomer() {
     else {
 
         /*
-           New date = use customer's
-           normal milk quantity.
+           New date.
+           Use customer's normal
+           milk quantity.
         */
 
         if (milkQuantity) {
 
             milkQuantity.value =
-                customer.milk ||
-                customer.quantity ||
-                0;
+                Number(
+                    customer.milk ||
+                    customer.quantity ||
+                    0
+                );
 
         }
 
@@ -551,72 +770,6 @@ function renderCustomer() {
 }
 
 
-/* =========================================================
-   UPDATE PROGRESS
-========================================================= */
-
-function updateProgress() {
-
-    const total =
-        customers.length;
-
-
-    let completed = 0;
-
-
-    customers.forEach(
-        customer => {
-
-            if (
-                isCustomerCompleted(
-                    customer.id
-                )
-            ) {
-
-                completed++;
-
-            }
-
-        }
-    );
-
-
-    const percent =
-        total === 0
-            ? 0
-            : Math.round(
-                (
-                    completed /
-                    total
-                ) * 100
-            );
-
-
-    if (deliveryProgressText) {
-
-        deliveryProgressText.textContent =
-            `${completed} / ${total} Completed`;
-
-    }
-
-
-    if (deliveryPercent) {
-
-        deliveryPercent.textContent =
-            `${percent}%`;
-
-    }
-
-
-    if (deliveryProgressBar) {
-
-        deliveryProgressBar.style.width =
-            percent + "%";
-
-    }
-
-}
-
 
 /* =========================================================
    SAVE DELIVERY
@@ -650,10 +803,6 @@ function saveCurrentDelivery(
         )
     ) {
 
-        console.error(
-            "Database unavailable."
-        );
-
         return null;
 
     }
@@ -678,9 +827,10 @@ function saveCurrentDelivery(
 
 
         /*
-           IMPORTANT:
-           Save SELECTED date,
-           not today's date.
+           THIS IS THE IMPORTANT PART.
+
+           The record is saved against
+           the selected date.
         */
 
         date:
@@ -745,17 +895,26 @@ function saveCurrentDelivery(
 
     if (existing) {
 
-        const index =
+        const existingIndex =
             db.deliveries.findIndex(
-                item =>
-                    item.id ===
-                    existing.id
+                function(item) {
+
+                    return (
+                        item.id ===
+                        existing.id
+                    );
+
+                }
             );
 
 
-        if (index !== -1) {
+        if (
+            existingIndex !== -1
+        ) {
 
-            db.deliveries[index] =
+            db.deliveries[
+                existingIndex
+            ] =
                 delivery;
 
         }
@@ -779,6 +938,7 @@ function saveCurrentDelivery(
 }
 
 
+
 /* =========================================================
    NEXT CUSTOMER
 ========================================================= */
@@ -796,14 +956,18 @@ function moveToNextCustomer() {
 
         if (
             !isCustomerCompleted(
-                customers[nextIndex].id
+                customers[
+                    nextIndex
+                ].id
             )
         ) {
 
             currentIndex =
                 nextIndex;
 
+
             renderCustomer();
+
 
             return;
 
@@ -818,6 +982,7 @@ function moveToNextCustomer() {
     showCompletion();
 
 }
+
 
 
 /* =========================================================
@@ -859,6 +1024,7 @@ function markDelivered() {
 }
 
 
+
 /* =========================================================
    MARK NOT DELIVERED
 ========================================================= */
@@ -880,7 +1046,7 @@ function markNotDelivered() {
 
     const confirmed =
         confirm(
-            `Mark ${customer.name || "customer"} as NOT DELIVERED for ${selectedDate}?`
+            `Mark ${customer.name || "customer"} as NOT DELIVERED for ${formatDate(selectedDate)}?`
         );
 
 
@@ -911,6 +1077,7 @@ function markNotDelivered() {
 }
 
 
+
 /* =========================================================
    PREVIOUS CUSTOMER
 ========================================================= */
@@ -933,6 +1100,7 @@ function previousCustomer() {
 }
 
 
+
 /* =========================================================
    QUANTITY BUTTONS
 ========================================================= */
@@ -949,10 +1117,12 @@ function setupQuantityButtons(
             minusId
         );
 
+
     const input =
         document.getElementById(
             inputId
         );
+
 
     const plus =
         document.getElementById(
@@ -1017,6 +1187,7 @@ function setupQuantityButtons(
 }
 
 
+
 /* =========================================================
    SHOW COMPLETION
 ========================================================= */
@@ -1047,7 +1218,7 @@ function showCompletion() {
 
 
     customers.forEach(
-        customer => {
+        function(customer) {
 
             const record =
                 getSelectedDateRecord(
@@ -1117,8 +1288,9 @@ function showCompletion() {
 }
 
 
+
 /* =========================================================
-   CHANGE DATE
+   CHANGE DELIVERY DATE
 ========================================================= */
 
 function changeDeliveryDate(
@@ -1136,14 +1308,17 @@ function changeDeliveryDate(
         newDate;
 
 
-    currentIndex = 0;
+    currentIndex =
+        0;
 
 
     displaySelectedDate();
 
-    loadCustomers();
+
+    loadDeliveryPage();
 
 }
+
 
 
 /* =========================================================
@@ -1152,13 +1327,28 @@ function changeDeliveryDate(
 
 if (deliveryDatePicker) {
 
+    /*
+       Set today's date initially.
+    */
+
     deliveryDatePicker.value =
-        selectedDate;
+        getTodayDate();
+
+
+    selectedDate =
+        getTodayDate();
 
 
     deliveryDatePicker.addEventListener(
         "change",
         function() {
+
+            if (!this.value) {
+
+                return;
+
+            }
+
 
             changeDeliveryDate(
                 this.value
@@ -1168,6 +1358,7 @@ if (deliveryDatePicker) {
     );
 
 }
+
 
 
 /* =========================================================
@@ -1184,6 +1375,10 @@ if (todayBtn) {
                 getTodayDate();
 
 
+            selectedDate =
+                today;
+
+
             if (deliveryDatePicker) {
 
                 deliveryDatePicker.value =
@@ -1192,14 +1387,20 @@ if (todayBtn) {
             }
 
 
-            changeDeliveryDate(
-                today
-            );
+            currentIndex =
+                0;
+
+
+            displaySelectedDate();
+
+
+            loadDeliveryPage();
 
         }
     );
 
 }
+
 
 
 /* =========================================================
@@ -1254,6 +1455,7 @@ if (previousBtn) {
 }
 
 
+
 /* =========================================================
    BACK TO HOME
 ========================================================= */
@@ -1271,7 +1473,12 @@ if (backToHomeBtn) {
         function() {
 
             /*
-               DO NOT LOG OUT.
+               IMPORTANT:
+
+               Do NOT remove login.
+               Do NOT clear localStorage.
+
+               Just return to dashboard.
             */
 
             window.location.href =
@@ -1281,6 +1488,7 @@ if (backToHomeBtn) {
     );
 
 }
+
 
 
 /* =========================================================
@@ -1306,6 +1514,7 @@ if (viewReportBtn) {
     );
 
 }
+
 
 
 /* =========================================================
@@ -1344,10 +1553,11 @@ setupQuantityButtons(
 );
 
 
+
 /* =========================================================
    START
 ========================================================= */
 
 displaySelectedDate();
 
-loadCustomers();
+loadDeliveryPage();
